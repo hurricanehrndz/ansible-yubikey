@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Carlos Hernandez
+  description: Configure pam to use yubikey OTP + password for sshd, additionally configure sudo to use yubikey OTP for authentication alone.
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+      - xenial
+  min_ansible_version: 1.8
+  galaxy_tags:
+    - system
+    - pam
+    - yubikey
+dependencies: []

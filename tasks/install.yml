@@ -1,0 +1,9 @@
+---
+- apt:
+    state: latest
+    name: "{{ item }}"
+  with_items:
+    - libpam-yubico
+  tags:
+    - install
+    - libpam-yubico

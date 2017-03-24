@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+# yubikey authorization only
+# can not be a system user
+auth        requisite     pam_succeed_if.so uid >= 1000 quiet_success
+# need to be part of yubikey group
+auth        [success=ok ignore=ignore default=die] pam_succeed_if.so user ingroup yubikey
+# need a yubikey
+auth        [success=2 new_authtok_reqd=ok ignore=ignore default=ignore]  pam_yubico.so mode=client id={{ pam_yubikey_api_id }} key={{ pam_yubikey_api_key }}
+auth        [success=1 new_authtok_reqd=ok ignore=ignore default=die]     pam_yubico.so mode=challenge-response
+auth        requisite     pam_deny.so

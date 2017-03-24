@@ -1,0 +1,59 @@
+---
+- template:
+    src: etc/pam.d/yubico-auth
+    dest: /etc/pam.d/yubico-auth
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+  tags:
+    - configure
+    - pam
+    - yubikey
+
+- template:
+    src: etc/pam.d/yubico-auth-nopass
+    dest: /etc/pam.d/yubico-auth-nopass
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+  tags:
+    - configure
+    - pam
+    - yubikey
+
+- name: Check pam file common-auth
+  command: grep -c '^auth' /etc/pam.d/common-auth'
+  register: command_auth_lines
+  failed_when: command_auth_lines.stdout|int != 3
+
+- lineinfile:
+    state: present
+    dest: /etc/pam.d/sudo
+    linebefore: '^@include common-auth$'
+    line: '@include yubico-auth-nopasswd'
+    create: no
+  when:
+    - pam_yubikey_api_id is defined
+    - pam_yubikey_api_key is defined
+  tags:
+    - configure
+    - sudo
+    - yubikey
+    - pam
+
+- lineinfile:
+    state: present
+    dest: /etc/pam.d/sshd
+    linebefore: '^@include common-auth$'
+    line: '@include yubico-auth'
+    create: no
+  when:
+    - pam_yubikey_api_id is defined
+    - pam_yubikey_api_key is defined
+  tags:
+    - configure
+    - openssh
+    - yubikey
+    - pam

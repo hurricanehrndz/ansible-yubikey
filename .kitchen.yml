@@ -1,0 +1,18 @@
+---
+driver:
+  # using docker to test
+  name: docker
+  privileged: true
+
+provisioner:
+  # use an ansible playbook to provision our server
+  name: ansible_playbook
+  # name of the host
+  hosts: test-kitchen
+
+platforms:
+  - name: ubuntu-16.04
+
+suites:
+  # suites found at /test/integration/$test-name
+  - name: default
