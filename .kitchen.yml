@@ -16,3 +16,6 @@ platforms:
 suites:
   # suites found at /test/integration/$test-name
   - name: default
+
+transport:
+  max_ssh_sessions: 3

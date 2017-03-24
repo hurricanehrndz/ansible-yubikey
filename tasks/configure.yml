@@ -24,14 +24,14 @@
     - yubikey
 
 - name: Check pam file common-auth
-  command: grep -c '^auth' /etc/pam.d/common-auth'
+  command: grep -c '^auth' /etc/pam.d/common-auth
   register: command_auth_lines
   failed_when: command_auth_lines.stdout|int != 3
 
 - lineinfile:
     state: present
     dest: /etc/pam.d/sudo
-    linebefore: '^@include common-auth$'
+    insertbefore: '^@include common-auth$'
     line: '@include yubico-auth-nopasswd'
     create: no
   when:
@@ -46,7 +46,7 @@
 - lineinfile:
     state: present
     dest: /etc/pam.d/sshd
-    linebefore: '^@include common-auth$'
+    insertbefore: '^@include common-auth$'
     line: '@include yubico-auth'
     create: no
   when:
