@@ -1,5 +1,6 @@
 ---
-- template:
+- name: Install pam config for yubio authentication
+  template:
     src: etc/pam.d/yubico-auth
     dest: /etc/pam.d/yubico-auth
     mode: 0644
@@ -11,7 +12,8 @@
     - pam
     - yubikey
 
-- template:
+- name: Install pam config for yubio authentication, skips unix auth
+  template:
     src: etc/pam.d/yubico-auth-nopass
     dest: /etc/pam.d/yubico-auth-nopass
     mode: 0644
@@ -26,9 +28,17 @@
 - name: Check pam file common-auth
   command: grep -c '^auth' /etc/pam.d/common-auth
   register: command_auth_lines
-  failed_when: command_auth_lines.stdout|int != 3
+  when:
+    - pam_yubikey_api_id is defined
+    - pam_yubikey_api_key is defined
+  changed_when: command_auth_lines.stdout|int != 3
 
-- lineinfile:
+- name: Check pam config for sshd
+  stat: path=/etc/pam.d/sshd
+  register: pam_sshd
+
+- name: Update sudo pam config to require yubico authentication
+  lineinfile:
     state: present
     dest: /etc/pam.d/sudo
     insertbefore: '^@include common-auth$'
@@ -37,13 +47,15 @@
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
+    - command_auth_lines.stdout|int == 3
   tags:
     - configure
     - sudo
     - yubikey
     - pam
 
-- lineinfile:
+- name: Update sshd pam config to require yubico authentication + pass
+  lineinfile:
     state: present
     dest: /etc/pam.d/sshd
     insertbefore: '^@include common-auth$'
@@ -52,6 +64,8 @@
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
+    - pam_sshd.stat.exists == True
+    - command_auth_lines.stdout|int == 3
   tags:
     - configure
     - openssh

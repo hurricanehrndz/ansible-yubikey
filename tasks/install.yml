@@ -1,6 +1,7 @@
 ---
-- apt:
-    state: latest
+- name: Install libpam-yubico
+  apt:
+    state: present
     name: "{{ item }}"
   with_items:
     - libpam-yubico
