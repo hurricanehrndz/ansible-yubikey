@@ -12,3 +12,6 @@ Gemfile.lock
 # Test-kitchen
 .kitchen/
 .kitchen.local.yml
+
+# Molecule
+.molecule/
