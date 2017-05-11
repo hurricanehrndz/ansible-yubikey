@@ -1,3 +1,14 @@
-.molecule
-tests/__pycache__/
-*.py[cod]
+# IDE specific
+.idea/
+
+# Bundler
+.bundle
+vendor
+Gemfile.lock
+
+# Ruby
+.ruby-version
+
+# Test-kitchen
+.kitchen/
+.kitchen.local.yml
