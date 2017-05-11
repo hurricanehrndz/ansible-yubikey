@@ -1,10 +1,19 @@
-# {{ ansible_managed }}
-# yubikey authorization only
+# Ansible managed file, do not edit directly
+# yubikey authorization
 # can not be a system user
-auth        requisite     pam_succeed_if.so uid >= 1000 quiet_success
+auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
+{% if pam_yubikey_exempted_group is defined %}
+# check if user is in a group exempted from yubico auth 
+auth        sufficient                  pam_succeed_if.so user ingroup {{ pam_yubikey_exempted_group }}
+{% endif %}
+
 # need to be part of yubikey group
-auth        [success=ok ignore=ignore default=die] pam_succeed_if.so user ingroup yubikey
-# need a yubikey, skipping password
-auth        [success=4 new_authtok_reqd=ok ignore=ignore default=ignore]  pam_yubico.so mode=client id={{ pam_yubikey_api_id }} key={{ pam_yubikey_api_key }}
-auth        [success=3 new_authtok_reqd=ok ignore=ignore default=die]     pam_yubico.so mode=challenge-response
-auth        requisite     pam_deny.so
+auth        requisite                   pam_succeed_if.so user ingroup yubikey
+# need a yubikey
+auth        [success=2 default=ignore]  pam_yubico.so mode=client id={{ pam_yubikey_api_id }} key={{ pam_yubikey_api_key }}
+auth        [success=1 default=die]     pam_yubico.so mode=challenge-response
+auth    	requisite			        pam_deny.so
+# prime the stack with a positive return value if there isn't one already;
+# this avoids us returning an error just because nothing sets a success code
+# since the modules above will each just jump around
+auth    	required	                pam_permit.so

@@ -1,0 +1,3 @@
+- src: git+https://github.com/hurricanehrndz/ansible-openssh.git
+  version: master
+  name: ansible-openssh

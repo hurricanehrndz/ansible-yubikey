@@ -12,4 +12,7 @@ galaxy_info:
     - system
     - pam
     - yubikey
-dependencies: []
+dependencies:
+  - role: ansible-openssh
+    src: git+https://github.com/hurricanehrndz/ansible-openssh
+    version: master
