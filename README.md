@@ -38,17 +38,20 @@ None.
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
 ```yaml
 ---
 - hosts: all
-  pre_tasks:
-  - name: Install openssh-server dependency
-    apt:
-      name: openssh-server
-      state: present
   roles:
+    - role: ansible-openssh
+      openssh_client: yes
+      openssh_server: yes
+      openssh_kbd_interactive_auth: "yes"
+      openssh_auth_methods:
+        - "publickey"
+        - "keyboard-interactive:pam"
+      openssh_users_and_auth_methods:
+        - user: "kitchen"
+          auth_method: "publickey"
     - role: ansible-pam_yubikey
       pam_yubikey_api_id: 1
       pam_yubikey_api_key: 'testkey'
