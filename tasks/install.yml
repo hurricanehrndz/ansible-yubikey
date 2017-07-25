@@ -1,10 +1,10 @@
 ---
 - name: Install libpam-yubico
-  apt:
+  package:
     state: present
     name: "{{ item }}"
   with_items:
-    - libpam-yubico
+    - "{{ libpam_yubico_pkg_name }}"
   tags:
     - install
     - libpam-yubico

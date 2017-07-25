@@ -1,23 +1,26 @@
 # Ansible managed file, do not edit directly
-# yubikey + unix password authorization
-# can not be a system user
-auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
+# yubikey authorization
+
+{% if ansible_os_family == "Fedora" %}
+auth        required                    pam_env.so
+{% endif %}
+auth        required                    pam_faildelay.so delay=2000000
 {% if pam_yubikey_exempted_group is defined %}
 # check if user is in a group exempted from yubico + pass auth
 auth        sufficient                  pam_succeed_if.so user ingroup {{ pam_yubikey_exempted_group }}
 {% endif %}
-
-# need to be part of yubikey group
+# root can login in with yubieky
+auth        [success=2 default=ignore]  pam_succeed_if.so user = root quiet_success
+# need to be part of yubikey group to use yubikey auth
 auth        requisite                   pam_succeed_if.so user ingroup yubikey
-# need a yubikey
+# can not be a system user
+auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
+# auth with a yubikey
 auth        [success=2 default=ignore]  pam_yubico.so mode=client id={{ pam_yubikey_api_id }} key={{ pam_yubikey_api_key }}
 auth        [success=1 default=die]     pam_yubico.so mode=challenge-response
-auth    	requisite			        pam_deny.so
-# here are the per-package modules (the "Primary" block)
-auth	    [success=1 default=ignore]	pam_unix.so nullok_secure
-# here's the fallback if no module succeeds
-auth    	requisite			        pam_deny.so
+# here's the fallback if no yubico module succeeds
+auth        requisite                   pam_deny.so
 # prime the stack with a positive return value if there isn't one already;
 # this avoids us returning an error just because nothing sets a success code
 # since the modules above will each just jump around
-auth    	required	                pam_permit.so
+auth        required                    pam_permit.so

@@ -30,6 +30,20 @@ the targeted host/hosts.
 * `pam_yubikey_api_id` (number) - Yubio API ID.
 * `pam_yubikey_api_key` (string) - Yubio API Key.
 
+Role Tunables
+--------------
+
+By default this role installs and edits pam configs so the ssh daemon requires
+both Yubico OTP and password authentication. This results in a three step
+verification process before granting users in the yubikey group access. For sudo
+verification, this role replaces password verification with Yubico OTP. The
+default deployment config can be tuned with the following variables.
+
+* `pam_yubikey_sshd_with_pass` (boolean) - Use Yubico OTP + password (true)
+* `pam_yubikey_sshd_with_nopass` (boolean) - Use Yubico OTP alone (false)
+* `pam_yubikey_sudo_with_pass` (boolean) - Use Yubico OTP + password (false)
+* `pam_yubikey_sudo_with_nopass` (boolean) - Use Yubico OTP alone (true)
+
 Dependencies
 ------------
 

@@ -3,11 +3,17 @@ require_relative './spec_helper'
 describe 'ansible-openssh::default' do
 
   describe package('openssh-server') do
-    it { should be_installed.by('apt') }
+    it { should be_installed }
   end
 
-  describe package('openssh-client') do
-    it { should be_installed.by('apt') }
+  if host_inventory['platform'] == 'fedora'
+    describe package('openssh-clients') do
+      it { should be_installed }
+    end
+  else
+    describe package('openssh-client') do
+      it { should be_installed }
+    end
   end
 
   describe port(22) do
@@ -32,35 +38,34 @@ describe 'ansible-openssh::default' do
     it { should be_mode 644 }
   end
 
-  describe package('libpam-yubico') do
-    it { should be_installed.by('apt') }
+  if host_inventory['platform'] == 'fedora'
+    describe package('pam_yubico') do
+      it { should be_installed }
+    end
+  elsif
+    describe package('libpam-yubico') do
+      it { should be_installed }
+    end
   end
 
-  describe file('/etc/pam.d/yubico-auth') do
+  describe file('/etc/pam.d/yubico-sshd-auth') do
     it { should be_owned_by('root') }
     it { should be_owned_by('root') }
-  end
-
-  describe file('/etc/pam.d/yubico-auth') do
     it { should be_mode 644 }
   end
 
-
-  describe file('/etc/pam.d/yubico-auth-nopass') do
+  describe file('/etc/pam.d/yubico-sudo-auth') do
     it { should be_owned_by('root') }
     it { should be_owned_by('root') }
-  end
-
-  describe file('/etc/pam.d/yubico-auth-nopass') do
     it { should be_mode 644 }
   end
 
   describe file('/etc/pam.d/sshd') do
-    its(:content) { should match(/@include yubico-auth/) }
+    its(:content) { should match(/yubico/) }
   end
 
   describe file('/etc/pam.d/sudo') do
-    its(:content) { should match(/@include yubico-auth-nopass/) }
+    its(:content) { should match(/yubico/) }
   end
 
 end
