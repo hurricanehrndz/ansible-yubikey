@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hurricanehrndz/ansible-pam_yubikey.svg?branch=master)](https://travis-ci.org/hurricanehrndz/ansible-pam_yubikey)
+
 pam_yubikey
 =========
 
