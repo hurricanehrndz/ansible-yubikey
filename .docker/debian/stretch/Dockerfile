@@ -3,14 +3,19 @@ FROM debian:stretch
 ENV DEBIAN_FRONTEND="noninteractive" container="docker"
 
 RUN apt-get update \
+ && apt-get upgrade -y \
  && apt-get install -y \
+	apt-utils \
 	curl \
 	locales \
 	lsb-release \
 	net-tools \
 	openssh-server \
+	python-pip \
+	python2.7 \
 	sudo \
 	systemd \
+ && pip install --upgrade pip \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && if ! getent passwd <%= @username %>; then \

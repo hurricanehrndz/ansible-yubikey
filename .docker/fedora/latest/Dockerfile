@@ -7,12 +7,19 @@ RUN dnf clean all \
  && dnf install -y \
 	curl \
 	findutils \
+	gcc \
 	glibc-langpack-en.x86_64  \
+	libffi-devel \
 	net-tools \
 	openssh-server \
+	openssl-devel \
+	python2-devel \
+	python2-pip \
 	redhat-lsb \
+	redhat-rpm-config \
 	sudo \
 	systemd \
+ && pip install --upgrade pip \
  && dnf clean all \
  && if ! getent passwd <%= @username %>; then \
       useradd -d /home/<%= @username %> -m -s /usr/bin/bash -p '*' <%= @username %>; \

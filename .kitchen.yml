@@ -34,7 +34,6 @@ platforms:
         - /sys/fs/cgroup:/sys/fs/cgroup:ro
       run_options:
         tmpfs:
-        - /tmp
         - /run
   - name: debian-stretch
     driver_config:
@@ -48,7 +47,6 @@ platforms:
         - /sys/fs/cgroup:/sys/fs/cgroup:ro
       run_options:
         tmpfs:
-        - /tmp
         - /run
   - name: fedora-latest
     driver_config:
@@ -62,7 +60,6 @@ platforms:
         - /sys/fs/cgroup:/sys/fs/cgroup:ro
       run_options:
         tmpfs:
-        - /tmp
         - /run
 
 verifier:
