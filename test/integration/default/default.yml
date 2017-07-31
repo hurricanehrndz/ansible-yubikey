@@ -2,10 +2,7 @@
 # host to test against
 - hosts: test-kitchen
   remote_user: root
-
-  roles:
-    # name of role to test
-    - role: ansible-openssh
+  vars:
       openssh_client: yes
       openssh_server: yes
       openssh_kbd_interactive_auth: "yes"
@@ -15,6 +12,8 @@
       openssh_users_and_auth_methods:
         - user: "kitchen"
           auth_method: "publickey"
+
+  roles:
     - role: ansible-pam_yubikey
       pam_yubikey_exempted_group: 'kitchen'
       pam_yubikey_api_id: 16
