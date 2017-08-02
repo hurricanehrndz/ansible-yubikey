@@ -8,3 +8,11 @@
   tags:
     - install
     - libpam-yubico
+
+- name: Install libsemanage-python for SE_LINUX enable systems
+  package:
+    state: present
+    name: libsemanage-python
+  when:
+    - ansible_distribution == "Fedora"
+    - ansible_selinux['status'] == "enabled"
