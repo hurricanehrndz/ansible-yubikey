@@ -227,7 +227,7 @@
 
 - name: Allow ypbind on SELinux, yubico module depends on it.
   seboolean:
-    name: ypbind
+    name: allow_ypbind
     state: yes
     persistent: true
   when:
