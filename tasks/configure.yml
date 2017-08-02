@@ -231,4 +231,4 @@
     state: yes
     persistent: true
   when:
-    - ansible_selinux == true
+    - ansible_selinux['status'] == "enabled"
