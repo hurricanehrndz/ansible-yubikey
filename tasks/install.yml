@@ -9,7 +9,7 @@
     - install
     - libpam-yubico
 
-- name: Install libsemanage-python for SE_LINUX enable systems
+- name: Install libsemanage-python for SELinux enable systems
   package:
     state: present
     name: libsemanage-python
