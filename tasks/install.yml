@@ -15,4 +15,4 @@
     name: libsemanage-python
   when:
     - ansible_distribution == "Fedora"
-    - ansible_selinux['status'] == "enabled"
+    - ansible_selinux['status']|default('disabled') == "enabled"
