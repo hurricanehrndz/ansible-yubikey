@@ -20,9 +20,10 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
  && login_shell=$(command -v bash) \
  && if ! getent passwd <%= @username %>; then \
-      useradd -d /home/<%= @username %> -m -s ${login_shell} -p '*' <%= @username %>; \
+      useradd -u 9000 -d /home/<%= @username %> -m -s "${login_shell}" -p '*' <%= @username %>; \
     fi \
- && echo "<%= @username %> ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+ && echo "<%= @username %> ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/kitchen \
+ && chmod 440 /etc/sudoers.d/kitchen \
  && echo "Defaults !requiretty" >> /etc/sudoers \
  && mkdir -p /home/<%= @username %>/.ssh \
  && chown -R <%= @username %> /home/<%= @username %>/.ssh \

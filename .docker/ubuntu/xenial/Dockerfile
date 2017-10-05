@@ -31,7 +31,7 @@ RUN apt-get update \
  && echo '<%= IO.read(@public_key).strip %>' >> /home/<%= @username %>/.ssh/authorized_keys \
  && chown <%= @username %> /home/<%= @username %>/.ssh/authorized_keys \
  && chmod 0600 /home/<%= @username %>/.ssh/authorized_keys \
- && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && /usr/sbin/locale-gen \
+ && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen \
  && cd /lib/systemd/system/sysinit.target.wants/; ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1 \
  && rm -f /lib/systemd/system/multi-user.target.wants/* \
  && rm -f /etc/systemd/system/*.wants/* \
