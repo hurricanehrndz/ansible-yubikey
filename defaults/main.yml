@@ -4,3 +4,4 @@ pam_yubikey_sshd_with_pass: true
 pam_yubikey_sshd_with_nopass: false
 pam_yubikey_sudo_with_pass: false
 pam_yubikey_sudo_with_nopass: true
+pam_yubikey_login: false

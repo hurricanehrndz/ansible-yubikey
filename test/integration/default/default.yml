@@ -18,3 +18,4 @@
       pam_yubikey_exempted_group: 'kitchen'
       pam_yubikey_api_id: 16
       pam_yubikey_api_key: 'REDACT'
+      pam_yubikey_login: true

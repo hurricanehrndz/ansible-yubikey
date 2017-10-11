@@ -2,15 +2,24 @@ require_relative './spec_helper'
 
 describe 'ansible-openssh::default' do
 
-  describe package('openssh-server') do
-    it { should be_installed }
+  if host_inventory['platform'] == 'opensuse'
+    describe package('openssh') do
+      it { should be_installed }
+    end
+  end
+
+  if host_inventory['platform'] != 'opensuse'
+    describe package('openssh-server') do
+      it { should be_installed }
+    end
   end
 
   if host_inventory['platform'] == 'fedora'
     describe package('openssh-clients') do
       it { should be_installed }
     end
-  else
+  end
+  if host_inventory['platform'] == 'ubuntu' || host_inventory['platform'] == 'debian'
     describe package('openssh-client') do
       it { should be_installed }
     end
@@ -38,15 +47,17 @@ describe 'ansible-openssh::default' do
     it { should be_mode 644 }
   end
 
-  if host_inventory['platform'] == 'fedora'
+  if host_inventory['platform'] == 'fedora' || host_inventory['platform'] == 'opensuse'
     describe package('pam_yubico') do
       it { should be_installed }
     end
-  elsif
+  end
+  if host_inventory['platform'] == 'ubuntu' || host_inventory['platform'] == 'debian'
     describe package('libpam-yubico') do
       it { should be_installed }
     end
   end
+
 
   describe file('/etc/pam.d/yubico-sshd-auth') do
     it { should be_owned_by('root') }

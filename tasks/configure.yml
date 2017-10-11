@@ -59,13 +59,19 @@
   with_items:
     - regex_match: '^@include common-auth$'
       line: '#@include common-auth'
+      os_family: Debian
     - regex_match: '^(auth\s+substack\s+password-auth)$'
       line: '#\1'
+      os_family: RedHat
+    - regex_match: '^(auth\s+include\s+common-auth)$'
+      line: '#\1'
+      os_family: Suse
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
     - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
     - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
+    - ansible_os_family == item.os_family
   tags:
     - configure
     - sudo
@@ -76,49 +82,56 @@
   lineinfile:
     state: present
     dest: /etc/pam.d/sshd
-    insertbefore: "{{ item.regex_match }}"
+    insertafter: "{{ item.regex_match }}"
     line: "{{ item.line }}"
     backup: yes
     create: no
   with_items:
     - regex_match: '^#@include common-auth$'
       line: '@include yubico-sshd-auth'
+      os_family: Debian
+    - regex_match: '^#auth\s+substack\s+password-auth$'
+      line: 'auth include yubico-sshd-auth'
+      os_family: RedHat
+    - regex_match: '^#auth\s+include\s+common-auth$'
+      line: 'auth include yubico-sshd-auth'
+      os_family: Suse
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
     - pam_sshd.stat.exists == true
     - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
     - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-    - ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+    - ansible_os_family == item.os_family
   tags:
     - configure
     - openssh
     - yubikey
     - pam
 
-- name: Configure sshd pam to include yubico-sshd-auth (Fedora)
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/sshd
-    insertbefore: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    backup: yes
-    create: no
-  with_items:
-    - regex_match: '^#auth\s+substack\s+password-auth$'
-      line: 'auth include yubico-sshd-auth'
-  when:
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_sshd.stat.exists == true
-    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
-    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-    - ansible_distribution == "Fedora"
-  tags:
-    - configure
-    - openssh
-    - yubikey
-    - pam
+#- name: Configure sshd pam to include yubico-sshd-auth (Fedora)
+#  lineinfile:
+#    state: present
+#    dest: /etc/pam.d/sshd
+#    insertbefore: "{{ item.regex_match }}"
+#    line: "{{ item.line }}"
+#    backup: yes
+#    create: no
+#  with_items:
+#    - regex_match: '^#auth\s+substack\s+password-auth$'
+#      line: 'auth include yubico-sshd-auth'
+#  when:
+#    - pam_yubikey_api_id is defined
+#    - pam_yubikey_api_key is defined
+#    - pam_sshd.stat.exists == true
+#    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
+#    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
+#    - ansible_distribution == "Fedora"
+#  tags:
+#    - configure
+#    - openssh
+#    - yubikey
+#    - pam
 
 - name: Add pam config for sudo auth with yubikey with pass
   template:
@@ -165,69 +178,165 @@
   with_items:
     - regex_match: '^@include common-auth$'
       line: '#@include common-auth'
+      os_family: Debian
     - regex_match: '^(auth\s+include\s+system-auth)$'
       line: '#\1'
+      os_family: RedHat
+    - regex_match: '^(auth\s+include\s+common-auth)$'
+      line: '#\1'
+      os_family: Suse
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
     - pam_sudo.stat.exists == true
     - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
     - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
+    - ansible_os_family == item.os_family
   tags:
     - configure
     - sudo
     - yubikey
     - pam
 
-- name: Configure sudo pam to include yubico-sudo-auth (Ubuntu/Debian)
+- name: Configure sudo pam to include yubico-sudo-auth
   lineinfile:
     state: present
     dest: /etc/pam.d/sudo
-    insertbefore: "{{ item.regex_match }}"
+    insertafter: "{{ item.regex_match }}"
     line: "{{ item.line }}"
     create: no
   with_items:
     - regex_match: '^#@include common-auth$'
       line: '@include yubico-sudo-auth'
+      os_family: Debian
+    - regex_match: '^#auth\s+include\s+system-auth$'
+      line: 'auth include yubico-sudo-auth'
+      os_family: RedHat
+    - regex_match: '^#auth\s+include\s+common-auth$'
+      line: 'auth include yubico-sudo-auth'
+      os_family: Suse
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
     - pam_sudo.stat.exists == true
     - pam_yubikey_sudo_with_pass == true or pam_yubikey_sudo_with_nopass == true
     - pam_yubikey_sudo_with_pass != pam_yubikey_sudo_with_nopass
-    - ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+    - ansible_os_family == item.os_family
   tags:
     - configure
     - sudo
     - yubikey
     - pam
 
-- name: Configure sudo pam to include yubico-sudo-auth (Fedora)
+- name: Add pam config for login auth with yubikey
+  template:
+    src: etc/pam.d/yubico-login-auth
+    dest: /etc/pam.d/yubico-login-auth
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+  when:
+    - pam_yubikey_login == true
+  tags:
+    - configure
+    - pam
+    - yubikey
+
+- name: Configure login pam not to include common-auth or system-auth
   lineinfile:
     state: present
-    dest: /etc/pam.d/sudo
-    insertbefore: "{{ item.regex_match }}"
+    dest: /etc/pam.d/login
+    regexp: "{{ item.regex_match }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  with_items:
+    - regex_match: '^@include common-auth$'
+      line: '#@include common-auth'
+      os_family: Debian
+    - regex_match: '^(auth\s+substack\s+system-auth)$'
+      line: '#\1'
+      os_family: RedHat
+    - regex_match: '^(auth\s+include\s+common-auth)$'
+      line: '#\1'
+      os_family: Suse
+  when:
+    - pam_yubikey_api_id is defined
+    - pam_yubikey_api_key is defined
+    - pam_sudo.stat.exists == true
+    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
+    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
+    - ansible_os_family == item.os_family
+  tags:
+    - configure
+    - sudo
+    - yubikey
+    - pam
+
+- name: Configure login pam to include yubico-login-auth
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/login
+    insertafter: "{{ item.regex_match }}"
     line: "{{ item.line }}"
     create: no
   with_items:
+    - regex_match: '^#@include common-auth$'
+      line: '@include yubico-login-auth'
+      os_family: Debian
     - regex_match: '^#auth\s+include\s+system-auth$'
-      line: 'auth include yubico-sudo-auth'
+      line: 'auth include yubico-login-auth'
+      os_family: RedHat
+    - regex_match: '^#auth\s+include\s+common-auth$'
+      line: 'auth include yubico-login-auth'
+      os_family: Suse
   when:
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
     - pam_sudo.stat.exists == true
     - pam_yubikey_sudo_with_pass == true or pam_yubikey_sudo_with_nopass == true
     - pam_yubikey_sudo_with_pass != pam_yubikey_sudo_with_nopass
-    - ansible_distribution == "Fedora"
+    - ansible_os_family == item.os_family
   tags:
     - configure
     - sudo
     - yubikey
     - pam
+
+#- name: Configure sudo pam to include yubico-sudo-auth (Fedora)
+#  lineinfile:
+#    state: present
+#    dest: /etc/pam.d/sudo
+#    insertbefore: "{{ item.regex_match }}"
+#    line: "{{ item.line }}"
+#    create: no
+#  with_items:
+#    - regex_match: '^#auth\s+include\s+system-auth$'
+#      line: 'auth include yubico-sudo-auth'
+#  when:
+#    - pam_yubikey_api_id is defined
+#    - pam_yubikey_api_key is defined
+#    - pam_sudo.stat.exists == true
+#    - pam_yubikey_sudo_with_pass == true or pam_yubikey_sudo_with_nopass == true
+#    - pam_yubikey_sudo_with_pass != pam_yubikey_sudo_with_nopass
+#    - ansible_distribution == "Fedora"
+#  tags:
+#    - configure
+#    - sudo
+#    - yubikey
+#    - pam
 
 - name: Allow ypbind on SELinux, yubico module depends on it.
   seboolean:
     name: allow_ypbind
+    state: yes
+    persistent: true
+  when:
+    - ansible_selinux['status']|default('disabled') == "enabled"
+
+- name: Allow yubico login  on SELinux
+  seboolean:
+    name: authlogin_yubikey
     state: yes
     persistent: true
   when:

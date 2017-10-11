@@ -1,7 +1,7 @@
 # Ansible managed file, do not edit directly
 # yubikey authorization
 
-{% if ansible_distribution == "Fedora" %}
+{% if ansible_os_family != "Debian" %}
 auth        required                    pam_env.so
 {% endif %}
 auth        required                    pam_faildelay.so delay=2000000

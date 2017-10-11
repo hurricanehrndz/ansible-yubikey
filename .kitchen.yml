@@ -61,6 +61,19 @@ platforms:
       run_options:
         tmpfs:
         - /run
+  - name: opensuse-tumbleweed
+    driver_config:
+      run_command: /usr/lib/systemd/systemd
+      dockerfile: .docker/opensuse/latest/Dockerfile
+      platform: opensuse
+      instance_name: test-role-ansible-yubikey-opensuse-latest
+      cap_add:
+        - SYS_ADMIN
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      run_options:
+        tmpfs:
+        - /run
 
 verifier:
   name: serverspec
@@ -72,5 +85,3 @@ suites:
     verifier:
       patterns:
         - roles/ansible-pam_yubikey/test/integration/default/serverspec/*_spec.rb
-      bundler_path: '/usr/local/bin'
-      rspec_path: '/usr/local/bin'
