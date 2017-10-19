@@ -5,14 +5,14 @@
 auth        required                    pam_env.so
 {% endif %}
 auth        required                    pam_faildelay.so delay=2000000
-# if user not in yubikey group fallback to password
+auth	    optional	                pam_gnome_keyring.so
+# if user not in yubikey group block local login
 auth        [success=5 default=ignore]  pam_succeed_if.so user notingroup yubikey
 # need to be part of yubikey group to use yubikey auth
 auth        requisite                   pam_succeed_if.so user ingroup yubikey
 # can not be a system user
 auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
 # auth with a yubikey
-auth        [success=2 default=ignore]  pam_yubico.so mode=client id={{ pam_yubikey_api_id }} key={{ pam_yubikey_api_key }}
 auth        [success=1 default=die]     pam_yubico.so mode=challenge-response
 # here's the fallback if no yubico module succeeds
 auth        requisite                   pam_deny.so
