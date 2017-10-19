@@ -1,4 +1,4 @@
-FROM opensuse:tumbleweed
+FROM opensuse/amd64:tumbleweed
 
 ENV container="docker"
 
@@ -18,7 +18,7 @@ RUN zypper --non-interactive --gpg-auto-import-keys ref \
 	openssl-devel \
 	python-devel \
 	python2-pip \
-	ruby2.5-rubygem-bundler \
+	ruby2.4-rubygem-bundler \
 	sudo \
 	systemd \
  && pip install --upgrade pip \
