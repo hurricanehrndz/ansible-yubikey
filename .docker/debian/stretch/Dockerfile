@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:stable
 
 ENV DEBIAN_FRONTEND="noninteractive" container="docker"
 
