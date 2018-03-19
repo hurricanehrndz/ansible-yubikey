@@ -237,6 +237,7 @@
       line: '#\1'
       os_family: Suse
   when:
+    - pam_yubikey_login == true
     - pam_yubikey_api_id is defined
     - pam_yubikey_api_key is defined
     - pam_sudo.stat.exists == true
