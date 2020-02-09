@@ -1,39 +1,32 @@
 ---
-language: ruby
-rvm:
-  - 2.4
-
-sudo: required
-services: docker
-
-env:
-  global:
-    - ANSIBLE_VERSION=v2.3
-  matrix:
-# Split up the test-kitchen run to avoid exceeding 50 minutes:
-    - KITCHEN_REGEXP=fedora
-    - KITCHEN_REGEXP=debian
-    - KITCHEN_REGEXP=ubuntu
-
-before_install:
-  # Make sure everything's up to date.
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq python-apt python-pycurl git python-pip ruby ruby-dev build-essential autoconf
-  - gem install bundler
+dist: bionic
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      env:
+        - ANSIBLE='ansible>=2.8'
+        - MOLECULE_SCENARIO="default"
+      services: docker
+      language: python
+      python: "3.8"
+    - os: linux
+      env:
+        - ANSIBLE='ansible>=2.8'
+        - MOLECULE_SCENARIO="default"
+        - MOLECULE_DISTRIBUTION="ubuntu18"
+      services: docker
+      language: python
+      python: "3.8"
 
 install:
-  - bash test/ansible-setup.sh
-  - bundle install
-  - ~/.avm/v1.9/venv/bin/pip install netaddr ansible-lint
-  - ~/.avm/v2.2/venv/bin/pip install netaddr ansible-lint
-  - ~/.avm/v2.3/venv/bin/pip install netaddr ansible-lint
-
+  - pip3 install -U pip
+  - pip install "$ANSIBLE" testinfra molecule docker
 script:
-  - ansible --version
-  - ruby --version
   - python --version
-  - pip --version
-  - bundler --version
-  - bundle show
-  - ~/.avm/$ANSIBLE_VERSION/venv/bin/ansible-lint -v ./
-  - bundle exec kitchen test $KITCHEN_REGEXP
+  - molecule --version
+  - ansible --version
+  - molecule test -s $MOLECULE_SCENARIO
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

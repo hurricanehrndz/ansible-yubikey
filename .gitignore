@@ -1,17 +1,29 @@
-# IDE specific
-.idea/
 
-# Bundler
-.bundle
-vendor
-Gemfile.lock
+# Created by https://www.gitignore.io/api/ansible
+# Edit at https://www.gitignore.io/?templates=ansible
 
-# Ruby
-.ruby-version
+### Ansible ###
+*.retry
 
-# Test-kitchen
-.kitchen/
-.kitchen.local.yml
+# End of https://www.gitignore.io/api/ansible
 
-# Molecule
-.molecule/
+
+# Created by https://www.gitignore.io/api/direnv
+# Edit at https://www.gitignore.io/?templates=direnv
+
+### direnv ###
+.direnv
+.envrc
+
+# End of https://www.gitignore.io/api/direnv
+
+
+# Created by https://www.gitignore.io/api/testinfra
+# Edit at https://www.gitignore.io/?templates=testinfra
+
+### Testinfra ###
+__pycache__/
+.pytest_cache/
+
+# End of https://www.gitignore.io/api/testinfra
+

@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Run ansible-pam_yubikey role
+      include_role:
+        name: ansible-pam_yubikey
