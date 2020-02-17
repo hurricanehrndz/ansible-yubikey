@@ -4,10 +4,13 @@
 {% if ansible_os_family != "Debian" %}
 auth        required                    pam_env.so
 {% endif %}
+{% if ansible_os_family == "Archlinux" %}
+auth        required                    pam_tally2.so        onerr=succeed file=/var/log/tallylog
+auth        required                    pam_shells.so
+auth        requisite                   pam_nologin.so
+{% endif %}
+{% if ansible_os_family == "RedHat" %}
 auth        required                    pam_faildelay.so delay=2000000
-{% if pam_yubikey_exempted_group is defined %}
-# check if user is in a group exempted from yubico + pass auth
-auth        sufficient                  pam_succeed_if.so user ingroup {{ pam_yubikey_exempted_group }}
 {% endif %}
 # root can login in with yubieky
 auth        [success=2 default=ignore]  pam_succeed_if.so user = root quiet_success

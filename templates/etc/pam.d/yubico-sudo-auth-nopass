@@ -4,18 +4,21 @@
 {% if ansible_os_family != "Debian" %}
 auth        required                    pam_env.so
 {% endif %}
+{% if ansible_os_family == "RedHat" %}
 auth        required                    pam_faildelay.so delay=2000000
+{% endif %}
 # if user not in yubikey group fallback to password
 auth        [success=5 default=ignore]  pam_succeed_if.so user notingroup yubikey
 # need to be part of yubikey group to use yubikey auth
 auth        requisite                   pam_succeed_if.so user ingroup yubikey
 # can not be a system user
 auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
-# need a yubikey
+# auth with a yubikey
 auth        [success=4 default=ignore]  pam_yubico.so mode=challenge-response
 auth        [success=3 default=die]     pam_yubico.so mode=client id={{ yubikey_api_id }} key={{ yubikey_api_key }}
+# here's the fallback if no yubico module succeeds
 auth        requisite                   pam_deny.so
-# here are the per-package modules (the "Primary" block)
+# passsword auth
 auth        [success=1 default=ignore]  pam_unix.so nullok_secure
 # here's the fallback if no module succeeds
 auth        requisite                   pam_deny.so

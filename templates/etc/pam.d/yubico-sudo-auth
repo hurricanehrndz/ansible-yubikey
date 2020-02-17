@@ -4,7 +4,9 @@
 {% if ansible_os_family != "Debian" %}
 auth        required                    pam_env.so
 {% endif %}
+{% if ansible_os_family == "RedHat" %}
 auth        required                    pam_faildelay.so delay=2000000
+{% endif %}
 # if user not in yubikey group fallback to password
 auth        [success=5 default=ignore]  pam_succeed_if.so user notingroup yubikey
 # need to be part of yubikey group to use yubikey auth
