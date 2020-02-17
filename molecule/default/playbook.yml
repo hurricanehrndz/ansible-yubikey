@@ -45,6 +45,11 @@
               66633036306462386534643632656435373934393438653966306638623530343463316530636635
               3263
   tasks:
+    - name: Add sshd privilege seperation dir
+      file:
+        path: /run/sshd
+        state: directory
+
     - name: Add user
       user:
         name: hurricane
