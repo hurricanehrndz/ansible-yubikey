@@ -1,0 +1,45 @@
+---
+- name: Add yubico login pam config
+  template:
+    src: etc/pam.d/yubico-login-auth
+    dest: "{{ yubikey_login_pam }}"
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+
+- name: Disable common-auth or system-auth within login pam config
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/login
+    regexp: "{{ item.regex_match }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  with_items:
+    - regex_match: '^@include common-auth$'
+      line: '#@include common-auth'
+      os_family: Debian
+    - regex_match: '^(auth\s+substack\s+system-auth)$'
+      line: '#\1'
+      os_family: RedHat
+    - regex_match: '^(auth\s+include\s+common-auth)$'
+      line: '#\1'
+      os_family: Suse
+
+- name: Enable yubico-login-auth within login pam config
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/login
+    insertafter: "{{ item.regex_match }}"
+    line: "{{ item.line }}"
+    create: no
+  with_items:
+    - regex_match: '^#@include common-auth$'
+      line: '@include yubico-login-auth'
+      os_family: Debian
+    - regex_match: '^#auth\s+include\s+system-auth$'
+      line: 'auth include yubico-login-auth'
+      os_family: RedHat
+    - regex_match: '^#auth\s+include\s+common-auth$'
+      line: 'auth include yubico-login-auth'
+      os_family: Suse

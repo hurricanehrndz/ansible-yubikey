@@ -1,84 +1,95 @@
-[![Build Status](https://travis-ci.org/hurricanehrndz/ansible-pam_yubikey.svg?branch=master)](https://travis-ci.org/hurricanehrndz/ansible-pam_yubikey)
+# hurricanehrndz.pam_yubikey
 
-pam_yubikey
-=========
+[![Build Status][travis-badge]][travis-link]
+[![Galaxy Role][role-badge]][galaxy-link]
+[![MIT licensed][mit-badge]][mit-link]
 
-This role installs the Yubico PAM module (libpam-yubico) needed for various
-yubikey authentication methods.  Additionally, it install two PAM configuration
-files that have been tested against Ubuntu's unmodified "common-auth". One that
-skips over regular unix authentication and one that does not. Lastly, it
-modifies the sshd PAM config so only users who are in the yubikey group, have
-a UID >= 1000, supply a valid OTP from a user authorized yubikey and the
-correct account password are able to successfully authenticate.  The sudo PAM
-config is modified to require the same for a successful authentication except
-there is no longer any need for the account password.
+This role installs and configures the Yubico PAM module (libpam-yubico). The
+configuration includes two additional PAM configuration files that have been
+tested against Ubuntu's unmodified "common-auth". One that skips over regular
+unix authentication and one that does not. Lastly, it modifies the sshd PAM
+config so only users who are in the yubikey group, have a UID >= 1000, supply a
+valid OTP from a user authorized yubikey and the correct account password are
+successfully authenticated.  The sudo PAM config is modified to require the same
+for a successful authentication except there is no need for the account
+password.
 
-Requirements
-------------
+## Requirements
 
-If this role is run prior to openssh-server being installed only the PAM config
-for sudo will be modified. It goes without saying that a yubikey is definitely
-a prerequisite. You will also require an API ID and Key from [Yubico](https://upgrade.yubico.com/getapikey/).
-Additionally, any users on the system requiring to authenticate via the Yubico
-PAM module will need to have created and populated [`~/.yubico/authorized_yubikeys` file](https://developers.yubico.com/yubico-pam/Yubikey_and_SSH_via_PAM.html).
+* yubikey
+* [Yubico API Key][yubico-api-key]
 
-Role Variables
---------------
+## Role Variables
 
 The following variables are read from other roles and/or the global scope (ie.
 hostvars, group vars, etc.), and are a prerequisite for any changes to occur on
 the targeted host/hosts.
 
-* `pam_yubikey_api_id` (number) - Yubio API ID.
-* `pam_yubikey_api_key` (string) - Yubio API Key.
+* `yubikey_api_id` (number) - Yubio API ID.
+* `yubikey_api_key` (string) - Yubio API Key.
 
-Role Tunables
---------------
+## Role Switches
 
 By default this role installs and edits pam configs so the ssh daemon requires
-both Yubico OTP and password authentication. This results in a three step
-verification process before granting users in the yubikey group access. For sudo
-verification, this role replaces password verification with Yubico OTP. The
-default deployment config can be tuned with the following variables.
+both Yubico OTP and password for successful authentication. This results in a
+three step verification process before granting users in the yubikey group
+access. For sudo verification, this role replaces password verification with
+Yubico OTP. The default deployment config can be tuned with the following
+variables.
 
-* `pam_yubikey_sshd_with_pass` (boolean) - Use Yubico OTP + password (true)
-* `pam_yubikey_sshd_with_nopass` (boolean) - Use Yubico OTP alone (false)
-* `pam_yubikey_sudo_with_pass` (boolean) - Use Yubico OTP + password (false)
-* `pam_yubikey_sudo_with_nopass` (boolean) - Use Yubico OTP alone (true)
+`yubikey_sshd_with_pass`
 
-Dependencies
-------------
+Defaults to true, requiring Yubico OTP and password for successful
+authentication. Set to false, to require only Yubico OTP. Results in `sshd`
+requiring  methods implied by flag in addition to those specified in
+`sshd_config` (certificate).
+
+`yubikey_sudo_with_pass`
+
+Default to false, requiring only Yubico OTP to be granted sudo privileges. Set
+to false, to guard sudo with Yubico OTP and password.
+
+`yubikey_users`
+
+List of users to configure for Yubico OTP and Challenge Response authentication.
+See [role defaults][role-defaults] for an example.
+
+## Dependencies
 
 None.
 
-Example Playbook
-----------------
+## Example Playbook
 
 ```yaml
 ---
 - hosts: all
-  roles:
-    - role: ansible-openssh
-      openssh_client: yes
-      openssh_server: yes
-      openssh_kbd_interactive_auth: "yes"
-      openssh_auth_methods:
-        - "publickey"
-        - "keyboard-interactive:pam"
-      openssh_users_and_auth_methods:
-        - user: "kitchen"
-          auth_method: "publickey"
-    - role: ansible-pam_yubikey
+  vars:
       pam_yubikey_api_id: 1
       pam_yubikey_api_key: 'testkey'
+  pre-tasks:
+    - name: Update repo cache
+      action: >
+        {{ ansible_pkg_mgr }} update_cache=yes
+  tasks:
+    - name: Run pam-yubikey role
+      include_role:
+        name: hurricanehrndz.pam_yubikey
 ```
 
-License
--------
+## License
 
-MIT
+[MIT][mit-link]
 
-Author Information
-------------------
+## Author Information
 
-* [Carlos Hernandez](https://github.com/hurricanehrndz) | [e-mail](mailto:carlos@techbyte.ca) | [Twitter](https://twitter.com/hurricanehrndz)
+Carlos Hernandez | [e-mail](mailto:hurricanehrndz@techbyte.ca)
+
+[yubico-api-key]: https://upgrade.yubico.com/getapikey/
+[role-badge]: https://img.shields.io/ansible/role/d/45889?style=for-the-badge
+[galaxy-link]: https://galaxy.ansible.com/hurricanehrndz/pam_yubikey/
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge
+[mit-link]: https://raw.githubusercontent.com/hurricanehrndz/ansible-pam_yubikey/master/LICENSE
+[dotfiles-repo]: https://github.com/hurricanehrndz/dotfiles
+[travis-badge]: https://img.shields.io/travis/hurricanehrndz/ansible-pam_yubikey/master.svg?style=for-the-badge&logo=travis
+[travis-link]: https://travis-ci.org/hurricanehrndz/ansible-pam_yubikey
+[role-defaults]: https://raw.githubusercontent.com/hurricanehrndz/ansible-pam_yubikey/master/defaults/main.yml

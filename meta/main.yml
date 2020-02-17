@@ -1,18 +1,17 @@
 ---
 galaxy_info:
   author: Carlos Hernandez
-  description: Configure pam to use yubikey OTP + password for sshd, additionally configure sudo to use yubikey OTP for authentication alone.
+  description: Ansible role to install and configure yubico pam module
+  role_name: pam_yubikey
   license: MIT
   platforms:
     - name: Ubuntu
       versions:
-      - xenial
-  min_ansible_version: 1.8
+        - bionic
+    - name: Archlinux
+      versions:
+        - all
+  min_ansible_version: 2.8
   galaxy_tags:
-    - system
     - pam
     - yubikey
-dependencies:
-  - role: ansible-openssh
-    src: git+https://github.com/hurricanehrndz/ansible-openssh
-    version: master

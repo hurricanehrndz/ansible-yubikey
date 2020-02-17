@@ -1,7 +1,32 @@
 ---
 # defaults file for ansible-pam_yubikey
-pam_yubikey_sshd_with_pass: true
-pam_yubikey_sshd_with_nopass: false
-pam_yubikey_sudo_with_pass: false
-pam_yubikey_sudo_with_nopass: true
-pam_yubikey_login: false
+yubikey_sshd_and_pass: true
+yubikey_sudo_and_pass: false
+yubikey_challenge_login: false
+yubikey_add_system_group: true
+
+yubikey_sshd_pam: /etc/pam.d/yubico-sshd-auth
+yubikey_config_sshd: true
+
+yubikey_sshd_disable_pass: true
+yubikey_sshd_config_addition: |
+  Match group yubikey
+        AuthenticationMethods publickey,keyboard-interactive:pam
+
+yubikey_sudo_pam: /etc/pam.d/yubico-sudo-auth
+yubikey_config_sudo: true
+
+yubikey_config_login: false
+yubikey_login_pam: /etc/pam.d/yubico-login-auth
+
+yubikey_users: []
+# example
+#  - name: {{ ansible_user_id }}
+#    authorized_yubikeys:
+#      - ccccccfcjbff
+#      - ccccccevhffu
+#      - ccccccelhfrc
+#      - ccccccevhfdf
+#    challenges:
+#      - id: 456789
+#        challenge: "v2:01930:1930:2"

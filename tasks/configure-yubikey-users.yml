@@ -1,0 +1,55 @@
+---
+- name: Add {{ yubikey_user.name }} to yubikey group
+  user:
+    name: "{{ yubikey_user.name }}"
+    groups:
+      - yubikey
+    append: true
+
+- name: Get yubikey_user home
+  become: yes
+  getent:
+    database: passwd
+    key: "{{ yubikey_user.name }}"
+    split: ":"
+
+- name: Define yubikey_user_home
+  set_fact:
+    yubikey_user_home: "{{ getent_passwd[yubikey_user.name][4] }}"
+
+- name: Define yubikey_user_group
+  set_fact:
+    yubikey_user_group: "{{ getent_passwd[yubikey_user.name][2] }}"
+
+- name: Create authorized_yubikey destination
+  file:
+    state: directory
+    path: "{{ yubikey_user_home }}/.yubico"
+    owner: "{{ yubikey_user.name }}"
+    group: "{{ yubikey_user_group }}"
+    mode: 0700
+
+- name: Configure authorized_yubikeys for {{ yubikey_user.name }}
+  blockinfile:
+    path: "{{ yubikey_user_home }}/.yubico/authorized_yubikeys"
+    state: present
+    block: |
+      {{ yubikey_user.name }}:{{ yubikey_user.authorized_yubikeys|join(':') }}
+    create: yes
+    marker_begin: BEGIN
+    marker_end: END
+    mode: 0600
+    owner: "{{ yubikey_user.name }}"
+    group: "{{ yubikey_user_group }}"
+
+- name: Configure challenges and responses
+  copy:
+    dest: "{{ yubikey_user_home }}/.yubico/challenge-{{ item.id }}"
+    content: |
+      {{ item.challenge }}
+    force: yes
+    mode: 0600
+    owner: "{{ yubikey_user.name }}"
+    group: "{{ yubikey_user_group }}"
+  with_items: "{{ yubikey_user.challenges  }}"
+  when: yubikey_users.challenges|default([])|legnth

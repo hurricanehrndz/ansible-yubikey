@@ -1,13 +1,17 @@
 ---
-- name: Install libpam-yubico
+- name: Install yubico pam modules
   package:
     state: present
-    name: "{{ item }}"
-  with_items:
-    - "{{ libpam_yubico_pkg_name }}"
-  tags:
-    - install
-    - libpam-yubico
+    name: "{{ yubikey_pam_pkgs }}"
+
+- name: Install OpenSSH Server
+  package:
+    state: present
+    name: "{{ yubikey_sshd_pkgs }}"
+  when: yubikey_config_sshd|default(false)
+  notify: ssh-keygen hostkeys
+
+- meta: flush_handlers
 
 - name: Install libsemanage-python for SELinux enable systems
   package:

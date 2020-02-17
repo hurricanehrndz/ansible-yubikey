@@ -11,8 +11,8 @@ lint:
     config-data:
       ignore: '.direnv/'
 platforms:
-  - name: "ansible-pam_yubikey_${MOLECULE_DISTRIBUTION:-ubuntu18}"
-    image: "quay.io/samdoran/${MOLECULE_DISTRIBUTION:-ubuntu18}-ansible:latest"
+  - name: "ansible-pam_yubikey-${MOLECULE_DISTRIBUTION:-ubuntu18}"
+    image: "${MOLECULE_IMAGE:-quay.io/samdoran/ubuntu18-ansible}"
     command: ${MOLECULE_COMMAND:-""}
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'

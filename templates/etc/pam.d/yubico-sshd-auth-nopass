@@ -16,7 +16,7 @@ auth        requisite                   pam_succeed_if.so user ingroup yubikey
 # can not be a system user
 auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
 # auth with a yubikey
-auth        [success=2 default=ignore]  pam_yubico.so mode=client id={{ pam_yubikey_api_id }} key={{ pam_yubikey_api_key }}
+auth        [success=2 default=ignore]  pam_yubico.so mode=client id={{ yubikey_api_id }} key={{ yubikey_api_key }}
 auth        [success=1 default=die]     pam_yubico.so mode=challenge-response
 # here's the fallback if no yubico module succeeds
 auth        requisite                   pam_deny.so

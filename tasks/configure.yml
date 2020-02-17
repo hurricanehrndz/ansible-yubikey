@@ -1,284 +1,39 @@
 ---
-- name: Add pam config for ssh auth with yubikey with pass
-  template:
-    src: etc/pam.d/yubico-sshd-auth
-    dest: /etc/pam.d/yubico-sshd-auth
-    mode: 0644
-    owner: root
-    group: root
-    backup: yes
-  when:
-    - pam_yubikey_sshd_with_pass == true
-    - pam_yubikey_sshd_with_nopass == false
-  tags:
-    - configure
-    - pam
-    - yubikey
-
-- name: Add pam config for ssh auth with yubikey
-  template:
-    src: etc/pam.d/yubico-sshd-auth-nopass
-    dest: /etc/pam.d/yubico-sshd-auth
-    mode: 0644
-    owner: root
-    group: root
-    backup: yes
-  when:
-    - pam_yubikey_sshd_with_pass == false
-    - pam_yubikey_sshd_with_nopass == true
-  tags:
-    - configure
-    - pam
-    - yubikey
-
 - name: Add yubikey system group
   group:
     name: yubikey
     state: present
     system: yes
   when:
-    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
-    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-  tags:
-    - configure
-    - group
-    - yubikey
+    - yubikey_add_system_group
 
-- name: Check for sshd pam config
-  stat: path=/etc/pam.d/sshd
-  register: pam_sshd
+- name: Configure yubikey users
+  include_tasks: configure-yubikey-users.yml
+  with_items: "{{ yubikey_users }}"
+  loop_control:
+    loop_var: yubikey_user
+  when: yubikey_users|default([])|length
 
-- name: Configure sshd pam not to include common-auth or password-auth
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/sshd
-    regexp: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    backrefs: yes
-    backup: yes
-  with_items:
-    - regex_match: '^@include common-auth$'
-      line: '#@include common-auth'
-      os_family: Debian
-    - regex_match: '^(auth\s+substack\s+password-auth)$'
-      line: '#\1'
-      os_family: RedHat
-    - regex_match: '^(auth\s+include\s+common-auth)$'
-      line: '#\1'
-      os_family: Suse
+- name: Configure pam for OpenSSH Server
+  include_tasks: configure-sshd.yml
   when:
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
-    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-    - ansible_os_family == item.os_family
-  tags:
-    - configure
-    - sudo
-    - yubikey
-    - pam
+    - yubikey_config_sshd|default(false)
+    - yubikey_api_id is defined
+    - yubikey_api_key is defined
 
-- name: Configure sshd pam to include yubico-sshd-auth (Debian/Ubuntu)
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/sshd
-    insertafter: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    backup: yes
-    create: no
-  with_items:
-    - regex_match: '^#@include common-auth$'
-      line: '@include yubico-sshd-auth'
-      os_family: Debian
-    - regex_match: '^#auth\s+substack\s+password-auth$'
-      line: 'auth include yubico-sshd-auth'
-      os_family: RedHat
-    - regex_match: '^#auth\s+include\s+common-auth$'
-      line: 'auth include yubico-sshd-auth'
-      os_family: Suse
+- name: Configure pam for sudo user
+  include_tasks: configure-sudo.yml
   when:
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_sshd.stat.exists == true
-    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
-    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-    - ansible_os_family == item.os_family
-  tags:
-    - configure
-    - openssh
-    - yubikey
-    - pam
+    - yubikey_config_sudo|default(false)
+    - yubikey_api_id is defined
+    - yubikey_api_key is defined
 
-- name: Add pam config for sudo auth with yubikey with pass
-  template:
-    src: etc/pam.d/yubico-sudo-auth
-    dest: /etc/pam.d/yubico-sudo-auth
-    mode: 0644
-    owner: root
-    group: root
+- name: Configure pam for login
+  include_tasks: configure-login.yml
   when:
-    - pam_yubikey_sudo_with_pass == true
-    - pam_yubikey_sudo_with_nopass == false
-  tags:
-    - configure
-    - pam
-    - yubikey
-
-- name: Add pam config for sudo auth with yubikey
-  template:
-    src: etc/pam.d/yubico-sudo-auth-nopass
-    dest: /etc/pam.d/yubico-sudo-auth
-    mode: 0644
-    owner: root
-    group: root
-    backup: yes
-  when:
-    - pam_yubikey_sudo_with_pass == false
-    - pam_yubikey_sudo_with_nopass == true
-  tags:
-    - configure
-    - pam
-    - yubikey
-
-- name: Check for sudo pam config
-  stat: path=/etc/pam.d/sudo
-  register: pam_sudo
-
-- name: Configure sudo pam not to include common-auth or system-auth
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/sudo
-    regexp: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    backrefs: yes
-  with_items:
-    - regex_match: '^@include common-auth$'
-      line: '#@include common-auth'
-      os_family: Debian
-    - regex_match: '^(auth\s+include\s+system-auth)$'
-      line: '#\1'
-      os_family: RedHat
-    - regex_match: '^(auth\s+include\s+common-auth)$'
-      line: '#\1'
-      os_family: Suse
-  when:
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_sudo.stat.exists == true
-    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
-    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-    - ansible_os_family == item.os_family
-  tags:
-    - configure
-    - sudo
-    - yubikey
-    - pam
-
-- name: Configure sudo pam to include yubico-sudo-auth
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/sudo
-    insertafter: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    create: no
-  with_items:
-    - regex_match: '^#@include common-auth$'
-      line: '@include yubico-sudo-auth'
-      os_family: Debian
-    - regex_match: '^#auth\s+include\s+system-auth$'
-      line: 'auth include yubico-sudo-auth'
-      os_family: RedHat
-    - regex_match: '^#auth\s+include\s+common-auth$'
-      line: 'auth include yubico-sudo-auth'
-      os_family: Suse
-  when:
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_sudo.stat.exists == true
-    - pam_yubikey_sudo_with_pass == true or pam_yubikey_sudo_with_nopass == true
-    - pam_yubikey_sudo_with_pass != pam_yubikey_sudo_with_nopass
-    - ansible_os_family == item.os_family
-  tags:
-    - configure
-    - sudo
-    - yubikey
-    - pam
-
-- name: Add pam config for login auth with yubikey
-  template:
-    src: etc/pam.d/yubico-login-auth
-    dest: /etc/pam.d/yubico-login-auth
-    mode: 0644
-    owner: root
-    group: root
-    backup: yes
-  when:
-    - pam_yubikey_login == true
-  tags:
-    - configure
-    - pam
-    - yubikey
-
-- name: Configure login pam not to include common-auth or system-auth
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/login
-    regexp: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    backrefs: yes
-  with_items:
-    - regex_match: '^@include common-auth$'
-      line: '#@include common-auth'
-      os_family: Debian
-    - regex_match: '^(auth\s+substack\s+system-auth)$'
-      line: '#\1'
-      os_family: RedHat
-    - regex_match: '^(auth\s+include\s+common-auth)$'
-      line: '#\1'
-      os_family: Suse
-  when:
-    - pam_yubikey_login == true
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_sudo.stat.exists == true
-    - pam_yubikey_sshd_with_pass == true or pam_yubikey_sshd_with_nopass == true
-    - pam_yubikey_sshd_with_pass != pam_yubikey_sshd_with_nopass
-    - ansible_os_family == item.os_family
-  tags:
-    - configure
-    - sudo
-    - yubikey
-    - pam
-
-- name: Configure login pam to include yubico-login-auth
-  lineinfile:
-    state: present
-    dest: /etc/pam.d/login
-    insertafter: "{{ item.regex_match }}"
-    line: "{{ item.line }}"
-    create: no
-  with_items:
-    - regex_match: '^#@include common-auth$'
-      line: '@include yubico-login-auth'
-      os_family: Debian
-    - regex_match: '^#auth\s+include\s+system-auth$'
-      line: 'auth include yubico-login-auth'
-      os_family: RedHat
-    - regex_match: '^#auth\s+include\s+common-auth$'
-      line: 'auth include yubico-login-auth'
-      os_family: Suse
-  when:
-    - pam_yubikey_api_id is defined
-    - pam_yubikey_api_key is defined
-    - pam_sudo.stat.exists == true
-    - pam_yubikey_sudo_with_pass == true or pam_yubikey_sudo_with_nopass == true
-    - pam_yubikey_sudo_with_pass != pam_yubikey_sudo_with_nopass
-    - ansible_os_family == item.os_family
-  tags:
-    - configure
-    - sudo
-    - yubikey
-    - pam
+    - yubikey_config_login|default(false)
+    - yubikey_api_id is defined
+    - yubikey_api_key is defined
 
 - name: Allow ypbind on SELinux, yubico module depends on it.
   seboolean:

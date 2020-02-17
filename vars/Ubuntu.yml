@@ -1,2 +1,5 @@
 ---
-libpam_yubico_pkg_name: libpam-yubico
+yubikey_pam_pkgs:
+  - libpam-yubico
+yubikey_sshd_pkgs:
+  - openssh-server
