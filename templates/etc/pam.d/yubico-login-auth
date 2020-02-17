@@ -2,25 +2,30 @@
 # yubikey + unix password authorization
 
 {% if ansible_os_family != "Debian" %}
-auth        required                    pam_env.so
+auth    required        pam_env.so
 {% endif %}
-auth        required                    pam_faildelay.so delay=2000000
-auth	    optional	                pam_gnome_keyring.so
+{% if ansible_os_family == "Archlinux" %}
+auth    required        pam_tally2.so        onerr=succeed file=/var/log/tallylog
+auth    required        pam_shells.so
+{% endif %}
+{% if ansible_os_family == "RedHat" %}
+auth    required        pam_faildelay.so delay=2000000
+{% endif %}
 # if user not in yubikey group block local login
-auth        [success=5 default=ignore]  pam_succeed_if.so user notingroup yubikey
+auth    [success=5 default=ignore]  pam_succeed_if.so user notingroup yubikey
 # need to be part of yubikey group to use yubikey auth
-auth        requisite                   pam_succeed_if.so user ingroup yubikey
+auth    requisite       pam_succeed_if.so user ingroup yubikey
 # can not be a system user
-auth        requisite                   pam_succeed_if.so uid >= 1000 quiet_success
+auth    requisite       pam_succeed_if.so uid >= 1000 quiet_success
 # auth with a yubikey
-auth        [success=1 default=die]     pam_yubico.so mode=challenge-response
+auth    [success=1 default=die]     pam_yubico.so mode=challenge-response
 # here's the fallback if no yubico module succeeds
-auth        requisite                   pam_deny.so
+auth    requisite      pam_deny.so
 # passsword auth
-auth        [success=1 default=ignore]  pam_unix.so nullok_secure
+auth    [success=1 default=ignore]  pam_unix.so nullok_secure
 # here's the fallback if no module succeeds
-auth        requisite                   pam_deny.so
+auth    requisite      pam_deny.so
 # prime the stack with a positive return value if there isn't one already;
 # this avoids us returning an error just because nothing sets a success code
 # since the modules above will each just jump around
-auth        required                    pam_permit.so
+auth    required       pam_permit.so

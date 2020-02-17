@@ -2,6 +2,7 @@
 - name: Converge
   hosts: all
   vars:
+    yubikey_config_login: true
     yubikey_api_id: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           33613930323337636335323934383733373464376461653036396432613762346439376138313262

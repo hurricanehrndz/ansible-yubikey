@@ -11,7 +11,7 @@
 - name: Disable common-auth or system-auth within login pam config
   lineinfile:
     state: present
-    dest: /etc/pam.d/login
+    dest: /etc/pam.d/{{ item.pam_file }}
     regexp: "{{ item.regex_match }}"
     line: "{{ item.line }}"
     backrefs: yes
@@ -19,17 +19,26 @@
     - regex_match: '^@include common-auth$'
       line: '#@include common-auth'
       os_family: Debian
+      pam_file: login
     - regex_match: '^(auth\s+substack\s+system-auth)$'
       line: '#\1'
       os_family: RedHat
+      pam_file: login
     - regex_match: '^(auth\s+include\s+common-auth)$'
       line: '#\1'
       os_family: Suse
+      pam_file: login
+    - regex_match: '^(auth\s+include\s+system-login)$'
+      line: '#\1'
+      os_family: Archlinux
+      pam_file: system-local-login
+  when:
+    - ansible_os_family == item.os_family
 
 - name: Enable yubico-login-auth within login pam config
   lineinfile:
     state: present
-    dest: /etc/pam.d/login
+    dest: /etc/pam.d/{{ item.pam_file }}
     insertafter: "{{ item.regex_match }}"
     line: "{{ item.line }}"
     create: no
@@ -37,9 +46,18 @@
     - regex_match: '^#@include common-auth$'
       line: '@include yubico-login-auth'
       os_family: Debian
+      pam_file: login
     - regex_match: '^#auth\s+include\s+system-auth$'
       line: 'auth include yubico-login-auth'
       os_family: RedHat
+      pam_file: login
     - regex_match: '^#auth\s+include\s+common-auth$'
       line: 'auth include yubico-login-auth'
       os_family: Suse
+      pam_file: login
+    - regex_match: '^#auth\s+include\s+system-login$'
+      line: 'auth include yubico-login-auth'
+      os_family: Archlinux
+      pam_file: system-local-login
+  when:
+    - ansible_os_family == item.os_family
