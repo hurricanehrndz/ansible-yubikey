@@ -27,7 +27,8 @@ script:
   - python --version
   - molecule --version
   - ansible --version
-  - molecule test -s $MOLECULE_SCENARIO
+  - openssl aes-256-cbc -K $encrypted_48d092bfe7cc_key -iv $encrypted_48d092bfe7cc_iv -in .ci/vaultkey.enc -out $HOME/vaultkey -d
+  - export ANSIBLE_VAULT_PASSWORD_FILE=$HOME/vaultkey molecule test -s $MOLECULE_SCENARIO
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
