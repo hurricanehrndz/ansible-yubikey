@@ -85,7 +85,7 @@ None.
 Carlos Hernandez | [e-mail](mailto:hurricanehrndz@techbyte.ca)
 
 [yubico-api-key]: https://upgrade.yubico.com/getapikey/
-[role-badge]: https://img.shields.io/ansible/role/d/45889?style=for-the-badge
+[role-badge]: https://img.shields.io/ansible/role/d/46665?style=for-the-badge
 [galaxy-link]: https://galaxy.ansible.com/hurricanehrndz/pam_yubikey/
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge
 [mit-link]: https://raw.githubusercontent.com/hurricanehrndz/ansible-pam_yubikey/master/LICENSE
