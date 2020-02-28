@@ -64,8 +64,8 @@ None.
 ---
 - hosts: all
   vars:
-      pam_yubikey_api_id: 1
-      pam_yubikey_api_key: 'testkey'
+      yubikey_api_id: 1
+      yubikey_api_key: 'testkey'
   pre-tasks:
     - name: Update repo cache
       action: >
