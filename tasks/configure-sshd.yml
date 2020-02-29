@@ -1,12 +1,7 @@
 ---
 - name: Define yubikey_sshd_pam_config
   set_fact:
-    yubikey_sshd_pam_config: |-
-      {% if yubikey_sshd_and_pass -%}
-      etc/pam.d/yubico-sshd-auth
-      {%- else -%}
-      etc/pam.d/yubico-sshd-auth-nopass
-      {%- endif %}
+    yubikey_sshd_pam_config: etc/pam.d/yubico-sshd-auth
 
 - name: Add yubico sshd pam config
   template:
