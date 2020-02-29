@@ -46,8 +46,13 @@ requiring  methods implied by flag in addition to those specified in
 
 `yubikey_sudo_with_pass`
 
-Default to false, requiring only Yubico OTP to be granted sudo privileges. Set
+Defaults to false, requiring only Yubico OTP to be granted sudo privileges. Set
 to false, to guard sudo with Yubico OTP and password.
+
+`yubikey_sudo_chal_rsp`
+
+Defaults to false, Challenge Response Authentication Methods not enabled. Set
+to true, to grant sudo privileges with Yubico Challenge Response authentication.
 
 `yubikey_users`
 
