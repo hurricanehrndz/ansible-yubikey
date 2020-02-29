@@ -1,7 +1,7 @@
 ---
 - name: Add yubico login pam config
   template:
-    src: etc/pam.d/yubico-login-auth
+    src: etc/pam.d/yubico-login-auth.j2
     dest: "{{ yubikey_login_pam }}"
     mode: 0644
     owner: root
