@@ -3,7 +3,6 @@
 yubikey_sshd_and_pass: true
 yubikey_sudo_and_pass: false
 yubikey_sudo_chal_rsp: false
-yubikey_challenge_login: false
 yubikey_add_system_group: true
 
 yubikey_sshd_pam: /etc/pam.d/yubico-sshd-auth
