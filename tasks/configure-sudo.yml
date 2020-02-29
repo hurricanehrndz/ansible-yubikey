@@ -1,16 +1,11 @@
 ---
 - name: Define yubikey_sudo_pam_config
   set_fact:
-    yubikey_sudo_pam_config: |-
-      {% if yubikey_sudo_and_pass -%}
-      etc/pam.d/yubico-sudo-auth
-      {%- else -%}
-      etc/pam.d/yubico-sudo-auth-nopass
-      {%- endif %}
+    yubikey_sudo_pam_config: etc/pam.d/yubico-sudo-auth
 
 - name: Add yubico sudo pam config
   template:
-    src: "{{ yubikey_sudo_pam_config }}"
+    src: "{{ yubikey_sudo_pam_config }}.j2"
     dest: "{{ yubikey_sudo_pam }}"
     mode: 0644
     owner: root
