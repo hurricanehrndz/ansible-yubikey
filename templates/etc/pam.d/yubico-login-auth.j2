@@ -29,6 +29,6 @@ auth        requisite                   pam_deny.so
 # this avoids us returning an error just because nothing sets a success code
 # since the modules above will each just jump around
 auth        required                    pam_permit.so
-{% if ansible_os_family == "Archlinux" %}
+{% if ansible_os_family != "Debian" %}
 auth        required                    pam_env.so
 {% endif %}
