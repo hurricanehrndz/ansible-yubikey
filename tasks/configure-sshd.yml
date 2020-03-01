@@ -46,16 +46,16 @@
     create: no
   with_items:
     - regex_match: '^#@include common-auth$'
-      line: '@include {{ yubikey_sshd_pam }}'
+      line: '@include yubico-sshd-auth'
       os_family: Debian
     - regex_match: '^#auth\s+substack\s+password-auth$'
-      line: 'auth include {{ yubikey_sshd_pam }}'
+      line: 'auth include yubico-sshd-auth'
       os_family: RedHat
     - regex_match: '^#auth\s+include\s+common-auth$'
-      line: 'auth include {{ yubikey_sshd_pam }}'
+      line: 'auth include yubico-sshd-auth'
       os_family: Suse
     - regex_match: '^#auth\s+include\s+system-remote-login$'
-      line: 'auth include {{ yubikey_sshd_pam }}'
+      line: 'auth include yubico-sshd-auth'
       os_family: Archlinux
   when:
     - ansible_os_family == item.os_family
