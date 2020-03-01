@@ -10,7 +10,7 @@ lint: |
     ansible-lint
     flake8
 platforms:
-  - name: "ansible-pam_yubikey-${MOLECULE_DISTRIBUTION:-ubuntu18}"
+  - name: "ansible-yubikey_${MOLECULE_DISTRIBUTION:-ubuntu18}"
     image: "${MOLECULE_IMAGE:-quay.io/samdoran/ubuntu18-ansible}"
     command: ${MOLECULE_COMMAND:-""}
     volumes:

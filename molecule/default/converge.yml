@@ -22,6 +22,43 @@
         create_home: yes
         password: '$6$Dz7DRuGe$gJekeA67Ezp0raeRoS3AL6In2MpQ6z/tiY4w6b/xoyk0X8f/yNsOYNsBnVqnzlP643lGW6tvVRXvaJrmvqGR/0'
 
+    - name: '[Debian] Install pam testing tools'
+      package:
+        name: pamtester
+      when: ansible_os_family == 'Debian'
+
+    - name: '[Archlinux] Install pam testing tools'
+      block:
+        - command: pacman -Syy
+          changed_when: false
+
+        - package:
+            name: [base-devel, git]
+          changed_when: false
+
+        - git:
+            repo: https://aur.archlinux.org/pamtester
+            depth: 1
+            dest: /tmp/pamtester
+          become: true
+          become_user: nobody
+          changed_when: false
+
+        - lineinfile:
+            path: /etc/sudoers.d/nobody
+            line: "nobody ALL=(ALL) NOPASSWD: ALL"
+            create: yes
+            owner: root
+            mode: 0440
+
+        - command: makepkg -si --noconfirm
+          args:
+            chdir: /tmp/pamtester
+          become: true
+          become_user: nobody
+          changed_when: false
+      when: ansible_os_family == 'Archlinux'
+
     - name: Run ansible-pam_yubikey role
       include_role:
         name: ansible-pam_yubikey
