@@ -1,7 +1,7 @@
 ---
+# Based on ansible-lint config
 extends: default
 
-# https://github.com/ansible/ansible/blob/stable-2.9/test/lib/ansible_test/_data/sanity/yamllint/config/default.yml
 rules:
   braces:
     max-spaces-inside: 1
@@ -20,14 +20,13 @@ rules:
   document-start: disable
   empty-lines:
     max: 3
-    max-end: 1
     level: error
   hyphens:
     level: error
   indentation: disable
   key-duplicates: enable
   line-length: disable
-  new-line-at-end-of-file: enable
+  new-line-at-end-of-file: disable
   new-lines:
     type: unix
   trailing-spaces: disable
