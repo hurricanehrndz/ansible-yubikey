@@ -7,7 +7,8 @@
     yubikey_sshd_and_pass: true
     yubikey_sudo_chal_rsp: false
   tasks:
-    - include_vars: main.yml
+    - name: Import playbook secrets
+      include_vars: main.yml
 
     - name: Add sshd privilege seperation dir
       file:
@@ -29,29 +30,35 @@
 
     - name: '[Archlinux] Install pam testing tools'
       block:
-        - command: pacman -Syy
+        - name: Force refresh package database
+          command: pacman -Syy
           changed_when: false
 
-        - package:
+        - name: '[Archlinux] Install prerequisites for pamtester'
+          package:
             name: [base-devel, git]
           changed_when: false
 
-        - git:
+        - name: '[Archlinux] Clone pamtester'
+          git:
             repo: https://aur.archlinux.org/pamtester
             depth: 1
+            version: master
             dest: /tmp/pamtester
           become: true
           become_user: nobody
           changed_when: false
 
-        - lineinfile:
+        - name: '[Archlinux] Allow nobody sudo without pass'
+          lineinfile:
             path: /etc/sudoers.d/nobody
             line: "nobody ALL=(ALL) NOPASSWD: ALL"
             create: yes
             owner: root
             mode: 0440
 
-        - command: makepkg -si --noconfirm
+        - name: '[Archlinux] Install pamtester'
+          command: makepkg -si --noconfirm
           args:
             chdir: /tmp/pamtester
           become: true

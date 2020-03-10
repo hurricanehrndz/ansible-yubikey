@@ -4,11 +4,12 @@ dependency:
   options:
     role-file: requirements.yml
 driver:
-  name: docker
+  name: podman
 lint: |
   set -e
   yamllint .
   ansible-lint .
+  ansible-lint molecule/resources/playbooks/converge.yml
   flake8
 platforms:
   - name: "ansible-yubikey_${MOLECULE_DISTRIBUTION:-ubuntu18}"
@@ -17,7 +18,6 @@ platforms:
     command: ${MOLECULE_COMMAND:-""}
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-    privileged: true
     pre_build_image: false
 provisioner:
   name: ansible
@@ -26,8 +26,9 @@ provisioner:
   playbooks:
     converge: ../resources/playbooks/converge.yml
 scenario:
-  name: default
+  name: podman
 verifier:
   name: testinfra
+  directory: ../resources/tests/
   options:
     verbose: true
