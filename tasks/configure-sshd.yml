@@ -84,5 +84,5 @@
     state: present
     block: "{{ yubikey_sshd_config_addition }}"
     insertafter: EOF
-    validate: /usr/sbin/sshd -T -f %s
+    validate: /usr/sbin/sshd -T -C user=root -f %s
   notify: restart-sshd
