@@ -2,7 +2,7 @@
 
 export MOLECULE_IMAGE="manjarolinux/base:latest"
 export MOLECULE_DISTRIBUTION="manjaro"
-export MOLECULE_SCENARIO="podman"
-export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.secrets/ansible-ci"
+export MOLECULE_SCENARIO="default"
+export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.ansible/ci-secret"
 # https://github.com/ansible/ansible/issues/67004
 export ANSIBLE_PIPELINING=false
