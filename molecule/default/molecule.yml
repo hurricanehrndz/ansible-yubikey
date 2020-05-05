@@ -29,5 +29,6 @@ scenario:
   name: default
 verifier:
   name: testinfra
+  directory: ../resources/tests/
   options:
     verbose: true
