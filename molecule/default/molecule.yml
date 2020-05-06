@@ -9,10 +9,11 @@ lint: |
   set -e
   yamllint .
   ansible-lint .
+  ansible-lint molecule/resources/playbooks/converge.yml
   flake8
 platforms:
-  - name: "ansible-yubikey_${MOLECULE_DISTRIBUTION:-ubuntu18}"
-    image: "${MOLECULE_IMAGE:-quay.io/samdoran/ubuntu18-ansible}"
+  - name: "ansible-morethandotfiles_${MOLECULE_DISTRIBUTION:-ubuntu2004}"
+    image: "${MOLECULE_IMAGE:-geerlingguy/docker-ubuntu2004-ansible}"
     dockerfile: ../resources/playbooks/Dockerfile.j2
     command: ${MOLECULE_COMMAND:-""}
     volumes:
