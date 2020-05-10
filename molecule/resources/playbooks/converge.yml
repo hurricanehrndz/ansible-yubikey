@@ -3,6 +3,7 @@
   hosts: all
   vars:
     yubikey_config_login: true
+    yubikey_config_polkit: true
     yubikey_sudo_and_pass: false
     yubikey_sshd_and_pass: true
     yubikey_sudo_chal_rsp: false

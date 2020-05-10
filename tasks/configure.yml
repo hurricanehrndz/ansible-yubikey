@@ -28,6 +28,13 @@
     - yubikey_api_id is defined
     - yubikey_api_key is defined
 
+- name: Configure polkit-1
+  include_tasks: configure-polkit.yml
+  when:
+    - yubikey_config_polkit|default(false)
+    - yubikey_api_id is defined
+    - yubikey_api_key is defined
+
 - name: Configure pam for login
   include_tasks: configure-login.yml
   when:

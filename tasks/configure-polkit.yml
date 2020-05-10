@@ -1,0 +1,59 @@
+---
+- name: Define yubikey_polkit_pam_config
+  set_fact:
+    yubikey_polkit_pam_config: etc/pam.d/yubico-polkit-auth
+
+- name: Add yubico polkit pam config
+  template:
+    src: "{{ yubikey_polkit_pam_config }}.j2"
+    dest: "{{ yubikey_polkit_pam }}"
+    mode: 0644
+    owner: root
+    group: root
+    backup: yes
+
+- name: Disable common-auth or system-auth within polkit pam config
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/polkit-1
+    regexp: "{{ item.regex_match }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  with_items:
+    - regex_match: '^(@include\s+common-auth)$'
+      line: '#\1'
+      os_family: Debian
+    - regex_match: '^(auth\s+include\s+system-auth)$'
+      line: '#\1'
+      os_family: RedHat
+    - regex_match: '^(auth\s+include\s+common-auth)$'
+      line: '#\1'
+      os_family: Suse
+    - regex_match: '^(auth\s+include\s+system-auth)$'
+      line: '#\1'
+      os_family: Archlinux
+  when:
+    - ansible_os_family == item.os_family
+
+- name: Enable yubico-polkit-auth within polkit pam config
+  lineinfile:
+    state: present
+    dest: /etc/pam.d/polkit-1
+    insertafter: "{{ item.regex_match }}"
+    line: "{{ item.line }}"
+    create: no
+  with_items:
+    - regex_match: '^#@include common-auth$'
+      line: '@include yubico-polkit-auth'
+      os_family: Debian
+    - regex_match: '^#auth\s+include\s+system-auth$'
+      line: 'auth include yubico-polkit-auth'
+      os_family: RedHat
+    - regex_match: '^#auth\s+include\s+common-auth$'
+      line: 'auth include yubico-polkit-auth'
+      os_family: Suse
+    - regex_match: '^#auth\s+include\s+system-auth$'
+      line: 'auth include yubico-polkit-auth'
+      os_family: Archlinux
+  when:
+    - ansible_os_family == item.os_family
