@@ -9,9 +9,9 @@
     yubikey_sudo_chal_rsp: false
   tasks:
     - name: Import playbook secrets
-      include_vars: main.yml
+      include_vars: main.yml # noqa 505
 
-    - name: Add sshd privilege seperation dir
+    - name: Add sshd privilege seperation dir # noqa 208
       file:
         path: /run/sshd
         state: directory
