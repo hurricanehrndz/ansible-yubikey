@@ -67,7 +67,7 @@
     regexp: '^(#.?C|.?C)hallengeResponseAuthentication.*'
     line: 'ChallengeResponseAuthentication yes'
     backup: yes
-    validate: /usr/sbin/sshd -T -f %s
+    validate: /usr/sbin/sshd -T -C user=root -f %s
 
 - name: Update sshd_config - Disable Password Authentication
   lineinfile:
@@ -76,7 +76,7 @@
     regexp: '^#PasswordAuthentication.*'
     line: 'PasswordAuthentication no'
     backup: yes
-    validate: /usr/sbin/sshd -T -f %s
+    validate: /usr/sbin/sshd -T -C user=root -f %s
 
 - name: Update sshd_config - Force yubikey users to use yubikey
   blockinfile:
@@ -84,5 +84,5 @@
     state: present
     block: "{{ yubikey_sshd_config_addition }}"
     insertafter: EOF
-    validate: /usr/sbin/sshd -T -f %s
+    validate: /usr/sbin/sshd -T -C user=root -f %s
   notify: restart-sshd

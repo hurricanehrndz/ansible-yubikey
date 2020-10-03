@@ -37,14 +37,14 @@ access. For sudo verification, this role replaces password verification with
 Yubico OTP. The default deployment config can be tuned with the following
 variables.
 
-`yubikey_sshd_with_pass`
+`yubikey_sshd_and_pass`
 
 Defaults to true, requiring Yubico OTP and password for successful
 authentication. Set to false, to require only Yubico OTP. Results in `sshd`
 requiring  methods implied by flag in addition to those specified in
 `sshd_config` (certificate).
 
-`yubikey_sudo_with_pass`
+`yubikey_sudo_and_pass`
 
 Defaults to false, requiring only Yubico OTP to be granted sudo privileges. Set
 to false, to guard sudo with Yubico OTP and password.
