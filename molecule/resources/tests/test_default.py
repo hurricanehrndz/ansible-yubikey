@@ -11,18 +11,18 @@ def test_hosts_file(host):
 
 
 def test_ssh(host):
-    command = f"timeout 5 pamtester sshd hurricane authenticate"
+    command = f'{"timeout 5 pamtester sshd hurricane authenticate"}'
     cmd = host.run(command)
-    assert (f"YubiKey" in cmd.stderr)
+    assert (f'{"YubiKey"}' in cmd.stderr)
 
 
 def test_login(host):
-    command = f"timeout 5 pamtester login hurricane authenticate"
+    command = f'{"timeout 5 pamtester login hurricane authenticate"}'
     cmd = host.run(command)
-    assert (f"YubiKey" in cmd.stderr)
+    assert (f'{"YubiKey"}' in cmd.stderr)
 
 
 def test_sudo(host):
-    command = f"timeout 5 pamtester sudo hurricane authenticate"
+    command = f'{"timeout 5 pamtester sudo hurricane authenticate"}'
     cmd = host.run(command)
-    assert (f"YubiKey" in cmd.stderr)
+    assert (f'{"YubiKey"}' in cmd.stderr)
