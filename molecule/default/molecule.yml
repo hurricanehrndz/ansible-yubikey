@@ -13,7 +13,7 @@ lint: |
   ansible-lint molecule/resources/playbooks/converge.yml
   flake8
 platforms:
-  - name: "ansible-morethandotfiles_${MOLECULE_DISTRIBUTION:-ubuntu2004}"
+  - name: "ansible-pam_yubikey_${MOLECULE_DISTRIBUTION:-ubuntu2004}"
     image: "${MOLECULE_IMAGE:-geerlingguy/docker-ubuntu2004-ansible}"
     dockerfile: ../resources/playbooks/Dockerfile.j2
     command: ${MOLECULE_COMMAND:-""}
