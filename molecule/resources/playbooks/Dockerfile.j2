@@ -41,11 +41,11 @@ RUN systemctl mask dev-mqueue.mount dev-hugepages.mount \
       dnf --assumeyes install bash; \
     fi \
  && if [ -x "$(command -v apt-get)" ]; then \
-      apt-get update && apt-get upgrade -y && apt-get install -y sudo bash; \
+      apt-get update && apt-get upgrade -y && apt-get install -y sudo bash policykit-1; \
     fi \
  && if [ -x "$(command -v pacman)" ]; then \
       pacman -Syyu --noconfirm; \
-      pacman -S --noconfirm ansible sudo; \
+      pacman -S --noconfirm ansible sudo polkit; \
     fi
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
