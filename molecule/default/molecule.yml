@@ -15,12 +15,10 @@ lint: |
 platforms:
   - name: "ansible-pam_yubikey_${MOLECULE_DISTRIBUTION:-ubuntu2004}"
     image: "${MOLECULE_IMAGE:-geerlingguy/docker-ubuntu2004-ansible}"
-    dockerfile: ../resources/playbooks/Dockerfile.j2
     command: ${MOLECULE_COMMAND:-""}
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     privileged: true
-    pre_build_image: false
 provisioner:
   name: ansible
   options:
