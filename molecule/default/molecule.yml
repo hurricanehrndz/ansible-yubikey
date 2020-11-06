@@ -4,7 +4,7 @@ dependency:
   options:
     role-file: requirements.yml
 driver:
-  name: docker
+  name: lxd
 lint: |
   set -e
   PATH=${PATH}
@@ -13,20 +13,16 @@ lint: |
   ansible-lint molecule/resources/playbooks/converge.yml
   flake8
 platforms:
-  - name: "ansible-pam_yubikey_${MOLECULE_DISTRIBUTION:-ubuntu2004}"
-    image: "${MOLECULE_IMAGE:-geerlingguy/docker-ubuntu2004-ansible}"
-    command: ${MOLECULE_COMMAND:-""}
-    volumes:
-      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-    privileged: true
+  - name: "yubikey-${MOLECULE_DISTRIBUTION:-ubuntu-focal}"
+    alias: "${MOLECULE_IMAGE:-ubuntu/focal}"
 provisioner:
   name: ansible
   options:
     vvv: true
   playbooks:
+    create: ../resources/playbooks/create.yml
     converge: ../resources/playbooks/converge.yml
-scenario:
-  name: default
+    destroy: ../resources/playbooks/destroy.yml
 verifier:
   name: testinfra
   directory: ../resources/tests/

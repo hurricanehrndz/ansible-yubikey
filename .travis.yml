@@ -1,5 +1,5 @@
 ---
-dist: bionic
+dist: focal
 matrix:
   fast_finish: true
   include:
@@ -7,7 +7,6 @@ matrix:
       env:
         - ANSIBLE='ansible>=2.8'
         - MOLECULE_SCENARIO="default"
-      services: docker
       language: python
       python: "3.8"
 #    - os: linux
@@ -21,8 +20,12 @@ matrix:
 #      python: "3.8"
 
 install:
+  - sudo apt update
+  - sudo /snap/bin/lxd waitready
+  - sudo /snap/bin/lxd init --auto
+  - sudo chgrp travis /var/snap/lxd/common/lxd/unix.socket
   - pip3 install -U pip
-  - pip3 install "$ANSIBLE" testinfra molecule docker flake8 ansible-lint yamllint
+  - pip3 install "$ANSIBLE" testinfra molecule molecule-lxd docker flake8 ansible-lint yamllint
 script:
   - python --version
   - molecule --version

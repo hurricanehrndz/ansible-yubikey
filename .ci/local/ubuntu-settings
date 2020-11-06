@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export MOLECULE_IMAGE="quay.io/samdoran/ubuntu18-ansible"
-export MOLECULE_DISTRIBUTION="ubuntu"
+export MOLECULE_IMAGE="ubuntu-focal"
+export MOLECULE_DISTRIBUTION="ubuntu/focal"
 export MOLECULE_SCENARIO="default"
 export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.ansible/ci-secret"
 # https://github.com/ansible/ansible/issues/67004
