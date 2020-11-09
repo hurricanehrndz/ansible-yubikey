@@ -25,7 +25,7 @@ install:
   - sudo /snap/bin/lxd init --auto
   - sudo chgrp travis /var/snap/lxd/common/lxd/unix.socket
   - pip3 install -U pip
-  - pip3 install "$ANSIBLE" testinfra molecule molecule-lxd docker flake8 ansible-lint yamllint
+  - pip3 install "$ANSIBLE" testinfra molecule molecule-lxd flake8 ansible-lint yamllint
 script:
   - python --version
   - molecule --version
