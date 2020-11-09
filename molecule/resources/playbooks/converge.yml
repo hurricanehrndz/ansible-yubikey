@@ -67,6 +67,6 @@
           changed_when: false
       when: ansible_os_family == 'Archlinux'
 
-    - name: Run ansible-pam_yubikey role
+    - name: Run ansible-yubikey role
       include_role:
-        name: ansible-pam_yubikey
+        name: yubikey

@@ -2,7 +2,7 @@
 galaxy_info:
   author: Carlos Hernandez
   description: Ansible role to install and configure yubico pam module
-  role_name: pam_yubikey
+  role_name: yubikey
   license: MIT
   platforms:
     - name: Ubuntu
