@@ -1,5 +1,5 @@
 ---
-# defaults file for ansible-pam_yubikey
+# defaults file for ansible-yubikey
 yubikey_add_system_group: true
 
 yubikey_config_sshd: true

@@ -1,4 +1,4 @@
-# hurricanehrndz.pam_yubikey
+# hurricanehrndz.yubikey
 
 [![Build Status][travis-badge]][travis-link]
 [![Galaxy Role][role-badge]][galaxy-link]
@@ -78,7 +78,7 @@ None.
   tasks:
     - name: Run pam-yubikey role
       include_role:
-        name: hurricanehrndz.pam_yubikey
+        name: hurricanehrndz.yubikey
 ```
 
 ## License
@@ -91,10 +91,10 @@ Carlos Hernandez | [e-mail](mailto:hurricanehrndz@techbyte.ca)
 
 [yubico-api-key]: https://upgrade.yubico.com/getapikey/
 [role-badge]: https://img.shields.io/ansible/role/d/46665?style=for-the-badge
-[galaxy-link]: https://galaxy.ansible.com/hurricanehrndz/pam_yubikey/
+[galaxy-link]: https://galaxy.ansible.com/hurricanehrndz/yubikey/
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge
-[mit-link]: https://raw.githubusercontent.com/hurricanehrndz/ansible-pam_yubikey/master/LICENSE
+[mit-link]: https://raw.githubusercontent.com/hurricanehrndz/ansible-yubikey/master/LICENSE
 [dotfiles-repo]: https://github.com/hurricanehrndz/dotfiles
-[travis-badge]: https://img.shields.io/travis/hurricanehrndz/ansible-pam_yubikey/master.svg?style=for-the-badge&logo=travis
-[travis-link]: https://travis-ci.org/hurricanehrndz/ansible-pam_yubikey
-[role-defaults]: https://raw.githubusercontent.com/hurricanehrndz/ansible-pam_yubikey/master/defaults/main.yml
+[travis-badge]: https://img.shields.io/travis/hurricanehrndz/ansible-yubikey/master.svg?style=for-the-badge&logo=travis
+[travis-link]: https://travis-ci.org/hurricanehrndz/ansible-yubikey
+[role-defaults]: https://raw.githubusercontent.com/hurricanehrndz/ansible-yubikey/master/defaults/main.yml
