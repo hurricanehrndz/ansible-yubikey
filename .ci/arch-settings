@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export MOLECULE_IMAGE="archlinux/current"
+export MOLECULE_DISTRIBUTION="archlinux"
+export MOLECULE_SCENARIO="default"
+export ANSIBLE_VAULT_PASSWORD_FILE="$XDG_CONFIG_HOME/ansible/ci-secret"
+# https://github.com/ansible/ansible/issues/67004
+export ANSIBLE_PIPELINING=false
