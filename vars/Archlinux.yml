@@ -1,5 +1,6 @@
 ---
 yubikey_pam_pkgs:
   - yubico-pam
+  - polkit
 yubikey_sshd_pkgs:
   - openssh
