@@ -24,3 +24,10 @@
       delegate_to: "{{ item.name }}"
       raw: apt-get install -y python
       with_items: "{{ molecule_yml.platforms }}"
+      when: item.alias is not match("^archlinux.*")
+
+    - name: Install Python in container
+      delegate_to: "{{ item.name }}"
+      raw: pacman -Syyu --noconfirm python
+      with_items: "{{ molecule_yml.platforms }}"
+      when: item.alias is match("^archlinux.*")
