@@ -1,5 +1,6 @@
 ---
 yubikey_pam_pkgs:
   - libpam-yubico
+  - policykit-1
 yubikey_sshd_pkgs:
   - openssh-server
