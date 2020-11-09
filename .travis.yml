@@ -9,15 +9,14 @@ matrix:
         - MOLECULE_SCENARIO="default"
       language: python
       python: "3.8"
-#    - os: linux
-#      env:
-#        - ANSIBLE='ansible>=2.8'
-#        - MOLECULE_SCENARIO="default"
-#        - MOLECULE_DISTRIBUTION="archlinux"
-#        - MOLECULE_IMAGE="manjarolinux/base:latest"
-#      services: docker
-#      language: python
-#      python: "3.8"
+   - os: linux
+     env:
+       - ANSIBLE='ansible>=2.8'
+       - MOLECULE_SCENARIO="default"
+       - MOLECULE_DISTRIBUTION="archlinux"
+     services: docker
+     language: python
+     python: "3.8"
 
 install:
   - sudo apt update
