@@ -9,8 +9,14 @@ matrix:
         - MOLECULE_SCENARIO="default"
       language: python
       python: "3.8"
-
+      addons:
+        snaps:
+          - name: lxd
+git:
+  clone: false
 install:
+  - git clone https://github.com/$TRAVIS_REPO_SLUG.git yubikey
+  - cd yubikey
   - sudo apt update
   - sudo /snap/bin/lxd waitready
   - sudo /snap/bin/lxd init --auto
@@ -21,6 +27,7 @@ script:
   - python --version
   - molecule --version
   - ansible --version
+  - ansible-lint --version
   - openssl aes-256-cbc -K $encrypted_48d092bfe7cc_key -iv $encrypted_48d092bfe7cc_iv -in .ci/vaultkey.enc -out $HOME/vaultkey -d
   - ANSIBLE_VAULT_PASSWORD_FILE=$HOME/vaultkey molecule test -s $MOLECULE_SCENARIO
 
