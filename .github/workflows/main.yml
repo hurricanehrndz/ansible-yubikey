@@ -17,10 +17,8 @@ jobs:
         tests:
           - distro: "archlinux"
             img: "archlinux/current"
-            scenario: "default"
           - distro: "ubuntu"
             img: "ubuntu/focal"
-            scenario: "user"
 
     steps:
       - name: Configure LXD
@@ -38,14 +36,15 @@ jobs:
         with:
           python-version: '3.x'
           architecture: 'x64'
+
       - uses: actions/checkout@v2
         with:
-          path: pyenv
+          path: yubikey
 
       - name: Install molecule dependency
         run: |
           pip3 install -r requirements.txt
-        working-directory: pyenv
+        working-directory: yubikey
 
       - uses: actions/cache@v2
         with:
@@ -60,10 +59,17 @@ jobs:
           molecule --version
           ansible --version
 
+      - name: Setup ANSIBLE_VAULT_PASSWORD_FILE
+        run: |
+          echo -n "$CI_SECRET" > "$HOME/.ci-secret"
+        env:
+          CI_SECRET: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
       - name: Run molecule test
         run: |
-          sg lxd -c "molecule --debug test -s ${{ matrix.tests.scenario }}"
-        working-directory: pyenv
+          sg lxd -c "molecule --debug test"
+        working-directory: yubikey
         env:
           MLDISTRO: ${{ matrix.tests.distro }}
           MLIMG: ${{ matrix.tests.img }}
+          ANSIBLE_VAULT_PASSWORD_FILE: "$HOME/.ci-secret"
