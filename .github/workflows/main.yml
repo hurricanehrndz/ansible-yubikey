@@ -64,7 +64,7 @@ jobs:
 
       - name: Run molecule test
         run: |
-          sg lxd -c "molecule --debug test"
+          sg lxd -c "molecule test"
         working-directory: yubikey
         env:
           MLDISTRO: ${{ matrix.tests.distro }}

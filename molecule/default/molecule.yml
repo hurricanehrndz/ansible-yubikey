@@ -17,8 +17,6 @@ platforms:
     alias: "${MLIMG:-ubuntu/focal}"
 provisioner:
   name: ansible
-  options:
-    vvv: true
   playbooks:
     create: ../resources/playbooks/create.yml
     converge: ../resources/playbooks/converge.yml
