@@ -13,8 +13,8 @@ lint: |
   ansible-lint molecule/resources/playbooks/converge.yml
   flake8
 platforms:
-  - name: "yubikey-${MOLECULE_DISTRIBUTION:-ubuntu-focal}"
-    alias: "${MOLECULE_IMAGE:-ubuntu/focal}"
+  - name: "yubikey-${MLDISTRO:-ubuntu}"
+    alias: "${MLIMG:-ubuntu/focal}"
 provisioner:
   name: ansible
   options:

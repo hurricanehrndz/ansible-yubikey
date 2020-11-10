@@ -1,6 +1,6 @@
 # hurricanehrndz.yubikey
 
-[![Build Status][travis-badge]][travis-link]
+[![Build Status][action-badge]][action-link]
 [![Galaxy Role][role-badge]][galaxy-link]
 [![MIT licensed][mit-badge]][mit-link]
 
@@ -10,14 +10,14 @@ tested against Ubuntu's unmodified "common-auth". One that skips over regular
 unix authentication and one that does not. Lastly, it modifies the sshd PAM
 config so only users who are in the yubikey group, have a UID >= 1000, supply a
 valid OTP from a user authorized yubikey and the correct account password are
-successfully authenticated.  The sudo PAM config is modified to require the same
+successfully authenticated. The sudo PAM config is modified to require the same
 for a successful authentication except there is no need for the account
 password.
 
 ## Requirements
 
-* yubikey
-* [Yubico API Key][yubico-api-key]
+- yubikey
+- [Yubico API Key][yubico-api-key]
 
 ## Role Variables
 
@@ -25,8 +25,8 @@ The following variables are read from other roles and/or the global scope (ie.
 hostvars, group vars, etc.), and are a prerequisite for any changes to occur on
 the targeted host/hosts.
 
-* `yubikey_api_id` (number) - Yubio API ID.
-* `yubikey_api_key` (string) - Yubio API Key.
+- `yubikey_api_id` (number) - Yubio API ID.
+- `yubikey_api_key` (string) - Yubio API Key.
 
 ## Role Switches
 
@@ -41,7 +41,7 @@ variables.
 
 Defaults to true, requiring Yubico OTP and password for successful
 authentication. Set to false, to require only Yubico OTP. Results in `sshd`
-requiring  methods implied by flag in addition to those specified in
+requiring methods implied by flag in addition to those specified in
 `sshd_config` (certificate).
 
 `yubikey_sudo_and_pass`
@@ -69,8 +69,8 @@ None.
 ---
 - hosts: all
   vars:
-      yubikey_api_id: 1
-      yubikey_api_key: 'testkey'
+    yubikey_api_id: 1
+    yubikey_api_key: "testkey"
   pre-tasks:
     - name: Update repo cache
       action: >
@@ -98,3 +98,5 @@ Carlos Hernandez | [e-mail](mailto:hurricanehrndz@techbyte.ca)
 [travis-badge]: https://img.shields.io/travis/hurricanehrndz/ansible-yubikey/master.svg?style=for-the-badge&logo=travis
 [travis-link]: https://travis-ci.org/hurricanehrndz/ansible-yubikey
 [role-defaults]: https://raw.githubusercontent.com/hurricanehrndz/ansible-yubikey/master/defaults/main.yml
+[action-badge]: https://img.shields.io/github/workflow/status/hurricanehrndz/ansible-yubikey/CI?style=for-the-badge
+[action-link]: https://github.com/hurricanehrndz/ansible-yubikey/actions?query=workflow%3ACI
